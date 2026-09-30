@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "lang": "ja",
+    "short": "JP",
+    "name": "日本語"
+  },
+  "ui": {
+    "pageTitle": "bGeigie Zen 組み立て",
+    "description": "bGeigie Zen のインタラクティブ 3D 組み立て手順。",
+    "back": "Safecast",
+    "product": "bGeigie Zen · 組み立て",
+    "language": "言語",
+    "stepCount": "ステップ {n} / {total}",
+    "partsHeading": "使う部品",
+    "source": "情報源",
+    "subassembly": "サブアセンブリ",
+    "styleGroup": "表示スタイル",
+    "styleColour": "カラー",
+    "styleLine": "線画",
+    "flip": "裏返す",
+    "flipTitle": "基板の反対側を見る",
+    "fit": "視点を戻す",
+    "fitTitle": "このステップの視点に戻す",
+    "loading": "CAD データを読み込み中…",
+    "loadError": "ビューアーを起動できませんでした: {message}",
+    "canvasLabel": "3D 組み立てビュー。ドラッグで回転、Shift + ドラッグで移動、スクロールでズームできます。",
+    "prev": "前のステップ",
+    "next": "次のステップ",
+    "play": "再生",
+    "pause": "一時停止",
+    "replay": "このステップをもう一度",
+    "timeline": "組み立てタイムライン",
+    "coverKicker": "Safecast · 組み立て手順",
+    "coverTitle": "bGeigie Zen",
+    "coverSub": "3D で見る組み立て手順：ケース、バッテリー、GM 管、メイン基板、GPS、ディスプレイ。",
+    "coverSteps": "ステップ",
+    "coverChapters": "章",
+    "coverTools": "道具",
+    "start": "組み立てをはじめる →",
+    "coverHint": "ドラッグで回転 · Shift + ドラッグで移動 · スクロールでズーム · ← → でステップ移動",
+    "credit": "bGeigie Zen は {creator} のオープンハードウェアです。ビューアーは APS-II の Sesame 組み立てガイドを参考にしています。",
+    "creditGithub": "GitHub ↗",
+    "creditDiscord": "コミュニティ ↗"
+  },
+  "evidence": {
+    "instructor": {
+      "short": "講師",
+      "long": "講師からの報告・確認"
+    },
+    "measured": {
+      "short": "実測",
+      "long": "講師が実物で測ったおおよその寸法"
+    },
+    "photo": {
+      "short": "写真",
+      "long": "組み立て写真で確認"
+    },
+    "model": {
+      "short": "モデル",
+      "long": "モデル上の値や仮定（実測ではありません）"
+    }
+  },
+  "tools": {
+    "iron": "はんだごて",
+    "pliers": "ラジオペンチ",
+    "cutters": "ニッパー",
+    "tape": "絶縁テープ",
+    "stripper": "ワイヤーストリッパー",
+    "screwdriver": "ドライバー"
+  },
+  "labels": {
+    "front": "前面",
+    "battery": "バッテリー",
+    "window": "マイカ窓",
+    "antenna": "アンテナ",
+    "hvLead": "高圧線",
+    "batteryPlus": "バッテリー +"
+  },
+  "chapters": {
+    "case": "ケース",
+    "power": "バッテリーと GM 管",
+    "electronics": "電子部品",
+    "close": "仕上げ"
+  },
+  "parts": {
+    "enclosure-base": "ケース下部",
+    "lipo-battery": "LiPo バッテリー",
+    "gm-tube": "パンケーキ型 GM 管",
+    "m3-standoff": "M3 スペーサー",
+    "main-pcb": "メイン基板",
+    "esp32-module": "ESP32 モジュール",
+    "male-header-9-pin": "オスヘッダー 9 ピン",
+    "gps-module": "GPS モジュール",
+    "hv-module": "高圧電源モジュール",
+    "oled-display": "OLED ディスプレイ",
+    "usb-c-connector": "USB-C コネクター",
+    "lid": "表示窓付き上蓋"
+  },
+  "steps": {
+    "orient-the-case": {
+      "title": "ケースの向きを決める",
+      "text": "ケース下部を開口部を上にして置きます。USB-C 側が右になります。"
+    },
+    "fit-the-battery": {
+      "title": "バッテリーを入れる",
+      "text": "LiPo セルをラベルを上にして、ケース左側に入れます。リード線は中央側へ向けます。",
+      "notes": {
+        "model": "ジオメトリと寸法は仮のものです。公開前に実際の CAD に差し替えてください。"
+      }
+    },
+    "fit-the-tube": {
+      "title": "GM 管を入れる",
+      "text": "パンケーキ型 GM 管を、マイカ窓を上にしてケース右側に置きます。",
+      "notes": {
+        "model": "ジオメトリと寸法は仮のものです。公開前に実際の CAD に差し替えてください。"
+      }
+    },
+    "mount-the-standoffs": {
+      "title": "スペーサーを取り付ける",
+      "text": "4 本の M3 スペーサーをケースの四隅にねじ込みます。"
+    },
+    "seat-the-mainboard": {
+      "title": "メイン基板を載せる",
+      "text": "メイン基板をスペーサーに載せ、4 本のネジで固定します。バッテリーと GM 管は基板の下になります。"
+    },
+    "esp32-headers": {
+      "title": "ESP32 のヘッダー",
+      "text": "ESP32 モジュールの下に 9 ピンのオスヘッダーを 2 本、長い側を下にして差します。"
+    },
+    "solder-the-esp32": {
+      "title": "ESP32 をはんだ付け",
+      "text": "モジュール上面で、すべてのヘッダーピンをはんだ付けします。"
+    },
+    "seat-the-esp32": {
+      "title": "ESP32 を装着",
+      "text": "モジュールをメイン基板のソケットに差します。アンテナは基板の端側です。"
+    },
+    "build-the-gps": {
+      "title": "GPS を組み立てる",
+      "text": "GPS モジュールの 6 ピンをはんだ付けします。セラミックパッチアンテナは上向きです。"
+    },
+    "seat-the-gps": {
+      "title": "GPS を装着",
+      "text": "GPS モジュールをソケットに差します。"
+    },
+    "hv-module": {
+      "title": "高圧モジュール",
+      "text": "高圧電源モジュールをメイン基板にはんだ付けし、出力線を GM 管につなぎます。",
+      "notes": {
+        "info": "高圧モジュールは電源オフ・バッテリー未接続で扱ってください。"
+      }
+    },
+    "display-and-usb": {
+      "title": "ディスプレイと USB-C",
+      "text": "OLED ディスプレイと USB-C コネクターをはんだ付けします。ディスプレイは上蓋の窓に合わせます。"
+    },
+    "connect-the-battery": {
+      "title": "バッテリーを接続",
+      "text": "基板の裏側からバッテリーのリード線をはんだ付けします。先に極性を確認してください。",
+      "notes": {
+        "info": "リード線は短くし、GM 管と絶縁してください。"
+      }
+    },
+    "close-the-case": {
+      "title": "蓋を閉める",
+      "text": "ディスプレイを窓に通して蓋を載せ、固定します。"
+    },
+    "assembly-complete": {
+      "title": "組み立て完了",
+      "text": "電源を入れ、ディスプレイ・GPS 測位・カウントを確認してから使用してください。"
+    }
+  }
+}

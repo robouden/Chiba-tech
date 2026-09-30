@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "lang": "en",
+    "short": "EN",
+    "name": "English"
+  },
+  "ui": {
+    "pageTitle": "bGeigie Zen Build",
+    "description": "Interactive 3D assembly instructions for the bGeigie Zen.",
+    "back": "Safecast",
+    "product": "bGeigie Zen · Assembly",
+    "language": "Language",
+    "stepCount": "Step {n} of {total}",
+    "partsHeading": "Parts",
+    "source": "Source",
+    "subassembly": "Sub-assembly",
+    "styleGroup": "Drawing style",
+    "styleColour": "Colour",
+    "styleLine": "Line",
+    "flip": "Flip",
+    "flipTitle": "Look at the other side of the board",
+    "fit": "Fit",
+    "fitTitle": "Return to this step's view",
+    "loading": "Loading CAD…",
+    "loadError": "Could not start the viewer: {message}",
+    "canvasLabel": "3D assembly view. Drag to rotate, shift-drag to pan, scroll to zoom.",
+    "prev": "Previous step",
+    "next": "Next step",
+    "play": "Play",
+    "pause": "Pause",
+    "replay": "Replay this step",
+    "timeline": "Assembly timeline",
+    "coverKicker": "Safecast · Build instructions",
+    "coverTitle": "bGeigie Zen",
+    "coverSub": "Step-by-step 3D assembly: case, battery, GM tube, mainboard, GPS and display.",
+    "coverSteps": "steps",
+    "coverChapters": "chapters",
+    "coverTools": "tools",
+    "start": "Start building →",
+    "coverHint": "Drag to rotate · Shift-drag to pan · Scroll to zoom · ← → to change step",
+    "credit": "bGeigie Zen is a {creator} open hardware project. Viewer layout after the APS-II Sesame build guide.",
+    "creditGithub": "GitHub ↗",
+    "creditDiscord": "Community ↗"
+  },
+  "evidence": {
+    "instructor": {
+      "short": "Instructor",
+      "long": "Instructor report or confirmation"
+    },
+    "measured": {
+      "short": "Measured",
+      "long": "Instructor physical estimate"
+    },
+    "photo": {
+      "short": "Photo",
+      "long": "Seen in the build photographs"
+    },
+    "model": {
+      "short": "Modelled",
+      "long": "Modelled or assumed; not measured"
+    }
+  },
+  "tools": {
+    "iron": "Soldering iron",
+    "pliers": "Pliers",
+    "cutters": "Flush cutters",
+    "tape": "Electrical tape",
+    "stripper": "Wire stripper",
+    "screwdriver": "Screwdriver"
+  },
+  "labels": {
+    "front": "front",
+    "battery": "battery",
+    "window": "mica window",
+    "antenna": "antenna",
+    "hvLead": "HV lead",
+    "batteryPlus": "battery +"
+  },
+  "chapters": {
+    "case": "Case",
+    "power": "Battery & tube",
+    "electronics": "Electronics",
+    "close": "Closing up"
+  },
+  "parts": {
+    "enclosure-base": "Enclosure base",
+    "lipo-battery": "LiPo battery",
+    "gm-tube": "GM pancake tube",
+    "m3-standoff": "M3 standoff",
+    "main-pcb": "Main PCB",
+    "esp32-module": "ESP32 module",
+    "male-header-9-pin": "Male header, 9-pin",
+    "gps-module": "GPS module",
+    "hv-module": "HV supply module",
+    "oled-display": "OLED display",
+    "usb-c-connector": "USB-C connector",
+    "lid": "Lid with display window"
+  },
+  "steps": {
+    "orient-the-case": {
+      "title": "Orient the case",
+      "text": "Place the enclosure base on the bench, open side up. The USB-C side is on the right."
+    },
+    "fit-the-battery": {
+      "title": "Fit the battery",
+      "text": "Lower the LiPo cell into the left half of the base, label up. Route its lead toward the middle.",
+      "notes": {
+        "model": "Placeholder geometry and dimensions; replace with the real CAD before publishing."
+      }
+    },
+    "fit-the-tube": {
+      "title": "Fit the GM tube",
+      "text": "Seat the pancake Geiger–Müller tube in the right half of the base with its mica window facing up.",
+      "notes": {
+        "model": "Placeholder geometry and dimensions; replace with the real CAD before publishing."
+      }
+    },
+    "mount-the-standoffs": {
+      "title": "Mount the standoffs",
+      "text": "Screw the four M3 standoffs into the corner posts of the base."
+    },
+    "seat-the-mainboard": {
+      "title": "Seat the mainboard",
+      "text": "Lower the main PCB onto the standoffs and fasten it with four screws. The battery and tube sit underneath."
+    },
+    "esp32-headers": {
+      "title": "ESP32 headers",
+      "text": "Fit two 9-pin male headers under the ESP32 module, long ends down."
+    },
+    "solder-the-esp32": {
+      "title": "Solder the ESP32",
+      "text": "Solder every header pin on the module’s top face."
+    },
+    "seat-the-esp32": {
+      "title": "Seat the ESP32",
+      "text": "Plug the module into the mainboard sockets, antenna toward the board edge."
+    },
+    "build-the-gps": {
+      "title": "Build the GPS",
+      "text": "Solder the six header pins of the GPS module. The ceramic patch antenna faces up."
+    },
+    "seat-the-gps": {
+      "title": "Seat the GPS",
+      "text": "Plug the GPS module into its socket."
+    },
+    "hv-module": {
+      "title": "HV module",
+      "text": "Solder the high-voltage supply to the mainboard and connect its output lead to the tube.",
+      "notes": {
+        "info": "Handle the HV module only with power off and the battery unplugged."
+      }
+    },
+    "display-and-usb": {
+      "title": "Display and USB-C",
+      "text": "Solder the OLED display and the USB-C connector. The display must line up with the lid window."
+    },
+    "connect-the-battery": {
+      "title": "Connect the battery",
+      "text": "Solder the battery lead to the mainboard from underneath. Check polarity first.",
+      "notes": {
+        "info": "Keep the lead short and insulated from the tube."
+      }
+    },
+    "close-the-case": {
+      "title": "Close the case",
+      "text": "Lower the lid, display through the window, and fasten it."
+    },
+    "assembly-complete": {
+      "title": "Assembly complete",
+      "text": "Power on and check the display, GPS fix and counts before field use."
+    }
+  }
+}
