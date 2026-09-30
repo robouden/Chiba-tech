@@ -40,16 +40,24 @@ const S = {
   anode: is('tube.anode'),
   sleeve: is('anode.sleeve'),
   cathode: is('tube.cathode'),
-  qi: is('qi.coil', 'qi.module'),
+  coil: is('charger.coil'),
+  qiBoard: is('charger.board'),
+  qiParts: is('charger.coil', 'charger.board', 'charger.leads', 'charger.cable'),
   sd: is('sdcard'),
   battery: is('battery'),
   case: is('case'),
+  housingBody: is('housing.body'),
+  housingLid: is('housing.lid'),
 };
 S.clipsAndSolder = any(S.clips, S.solderClips);
+S.chargerUnit = any(S.case, S.housingBody, S.qiParts);
 export const SELECTORS = S;
 
-// No detachable sub-assemblies in this build: every part is added directly to the board.
-export const UNITS = {};
+// The Qi charger (coil, board, cable) sits between the rubber liner and the polycarbonate case, so it
+// is built with them on its own and lowered onto the finished electronics in `place-in-the-case`.
+export const UNITS = {
+  charger: { select: (p) => S.chargerUnit(p), stage: [0, 0, -46] },
+};
 
 export const EVIDENCE = ['manual', 'cad', 'model'];
 export const TOOLS = ['iron', 'cutters', 'pliers', 'screwdriver', 'heatgun', 'stripper'];
@@ -243,11 +251,17 @@ export const STEPS = [
   },
   {
     chapter: 'charger', id: 'wireless-charger',
+    isolate: ['charger'],
     tools: ['iron'],
-    parts: [{ key: 'qi-receiver', qty: 1, sel: S.qi, swatch: '#b8732f' }],
-    add: [enter(S.qi, up(-20))],
+    parts: [
+      { key: 'pelican-housing', qty: 1, sel: S.housingBody, swatch: '#b8d5ea' },
+      { key: 'qi-receiver', qty: 1, sel: S.qiParts, swatch: '#b8732f' },
+      { key: 'pelican-liner', qty: 1, sel: S.case, swatch: '#2a2b2e' },
+    ],
+    add: [{ sel: S.housingBody, mode: 'appear' }, enter(S.qiParts, up(22), 0.25), enter(S.case, up(34), 0.6)],
+    labels: [{ part: 'charger.coil', key: 'qiCoil', anchor: 'bottom' }, { part: 'charger.board', key: 'qiBoard' }],
     notes: [{ kind: 'info' }, { kind: 'model' }],
-    view: { ...UNDER, yaw: -90 },
+    view: { yaw: -25, pitch: -40, focus: S.chargerUnit, zoom: 0.9 },
     evidence: ['manual', 'model'],
   },
   {
@@ -263,10 +277,11 @@ export const STEPS = [
   },
   {
     chapter: 'finish', id: 'place-in-the-case',
-    parts: [{ key: 'pelican-1015', qty: 1, sel: S.case, swatch: '#c7d3e0' }],
-    add: [enter(S.case, up(-46))],
+    seat: ['charger'],
+    parts: [{ key: 'pelican-lid', qty: 1, sel: S.housingLid, swatch: '#b8d5ea' }],
+    add: [enter(S.housingLid, up(56), 0.8)],
     notes: [{ kind: 'model' }],
-    view: { yaw: -58, pitch: 34 },
+    view: { yaw: -58, pitch: 30, focus: S.chargerUnit, zoom: 0.85 },
     evidence: ['manual', 'cad'],
   },
   {

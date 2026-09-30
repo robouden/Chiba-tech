@@ -33,7 +33,7 @@ struct VOut {
   return o;
 }
 
-@fragment fn fsBody(i: VOut) -> @location(0) vec4f {
+fn shade(i: VOut) -> vec3f {
   var n = normalize(i.normal);
   let v = normalize(g.eye.xyz - i.world);
   if (dot(n, v) < 0.0) { n = -n; }
@@ -46,7 +46,16 @@ struct VOut {
   let spec = pow(max(dot(n, normalize(l + v)), 0.0), 48.0) * 0.18 * (1.0 - line);
   let shaded = base * (0.34 + 0.16 * sky + key * 0.58 + fill) + vec3f(spec);
   let flat = base * (0.86 + 0.14 * key);
-  return vec4f(mix(shaded, flat, line), 1.0);
+  return mix(shaded, flat, line);
+}
+
+@fragment fn fsBody(i: VOut) -> @location(0) vec4f {
+  return vec4f(shade(i), 1.0);
+}
+
+// Translucent parts (manifest alpha < 1, e.g. the clear polycarbonate case): alpha rides in pivot.w.
+@fragment fn fsGlass(i: VOut) -> @location(0) vec4f {
+  return vec4f(shade(i), p.pivot.w);
 }
 
 @vertex fn vsEdge(@location(0) pos: vec3f) -> @builtin(position) vec4f {
@@ -78,7 +87,7 @@ void main() {
 
 const GL_BODY_FS = `#version 300 es
 precision highp float;
-uniform vec4 eye; uniform vec4 light; uniform vec4 style; uniform vec4 tint;
+uniform vec4 eye; uniform vec4 light; uniform vec4 style; uniform vec4 tint; uniform float alpha;
 in vec3 vWorld; in vec3 vNormal; in vec3 vColor;
 out vec4 outColor;
 void main() {
@@ -94,7 +103,7 @@ void main() {
   float spec = pow(max(dot(n, normalize(l + v)), 0.0), 48.0) * 0.18 * (1.0 - line);
   vec3 shaded = base * (0.34 + 0.16 * sky + key * 0.58 + fill) + vec3(spec);
   vec3 flatc = base * (0.86 + 0.14 * key);
-  outColor = vec4(mix(shaded, flatc, line), 1.0);
+  outColor = vec4(mix(shaded, flatc, line), alpha);
 }`;
 
 const GL_EDGE_VS = `#version 300 es
@@ -200,6 +209,23 @@ async function createWebGpuRenderer(canvas, mesh) {
     depthStencil: { format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less', depthBias: 2, depthBiasSlopeScale: 1.5 },
     multisample: { count: sampleCount },
   });
+  const glassBlend = { color: { srcFactor: 'src-alpha', dstFactor: 'one-minus-src-alpha' }, alpha: { srcFactor: 'zero', dstFactor: 'one' } };
+  const glassPipeline = device.createRenderPipeline({
+    layout,
+    vertex: {
+      module, entryPoint: 'vsBody',
+      buffers: [{ arrayStride: VERTEX_STRIDE, attributes: [
+        { shaderLocation: 0, offset: 0, format: 'float32x3' },
+        { shaderLocation: 1, offset: 12, format: 'float32x3' },
+        { shaderLocation: 2, offset: 24, format: 'unorm8x4' },
+      ] }],
+    },
+    fragment: { module, entryPoint: 'fsGlass', targets: [{ format, blend: glassBlend }] },
+    primitive: { topology: 'triangle-list', cullMode: 'none' },
+    depthStencil: { format: 'depth24plus', depthWriteEnabled: false, depthCompare: 'less' },
+    multisample: { count: sampleCount },
+  });
+  const isGlass = (part) => (part.alpha ?? 1) < 0.99;
   const blend = { color: { srcFactor: 'src-alpha', dstFactor: 'one-minus-src-alpha' }, alpha: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha' } };
   const edgePipeline = device.createRenderPipeline({
     layout,
@@ -237,6 +263,7 @@ async function createWebGpuRenderer(canvas, mesh) {
         const o = i * PART_STRIDE / 4;
         partData.set(s.offset, o); partData[o + 3] = s.scale;
         partData.set(s.pivot, o + 4);
+        partData[o + 7] = mesh.parts[i].alpha ?? 1;
         partData.set(s.tint, o + 8);
         partData.set(s.edge, o + 12);
       }
@@ -255,7 +282,7 @@ async function createWebGpuRenderer(canvas, mesh) {
       pass.setVertexBuffer(0, vertexBuffer);
       pass.setIndexBuffer(indexBuffer, 'uint32');
       mesh.parts.forEach((part, i) => {
-        if (!frame.parts[i].visible || !part.indexCount) return;
+        if (!frame.parts[i].visible || !part.indexCount || isGlass(part)) return;
         pass.setBindGroup(1, partGroup, [i * PART_STRIDE]);
         pass.drawIndexed(part.indexCount, 1, part.indexStart, 0);
       });
@@ -266,6 +293,14 @@ async function createWebGpuRenderer(canvas, mesh) {
         if (!s.visible || !part.edgeCount || s.edge[3] <= 0) return;
         pass.setBindGroup(1, partGroup, [i * PART_STRIDE]);
         pass.draw(part.edgeCount, 1, part.edgeStart, 0);
+      });
+      pass.setPipeline(glassPipeline);
+      pass.setVertexBuffer(0, vertexBuffer);
+      pass.setIndexBuffer(indexBuffer, 'uint32');
+      mesh.parts.forEach((part, i) => {
+        if (!frame.parts[i].visible || !part.indexCount || !isGlass(part)) return;
+        pass.setBindGroup(1, partGroup, [i * PART_STRIDE]);
+        pass.drawIndexed(part.indexCount, 1, part.indexStart, 0);
       });
       pass.end();
       device.queue.submit([encoder.finish()]);
@@ -325,7 +360,7 @@ function createWebGlRenderer(canvas, mesh) {
 
   gl.enable(gl.DEPTH_TEST);
   gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE);   // keep the canvas opaque
 
   return {
     backend: 'WebGL2',
@@ -343,14 +378,16 @@ function createWebGlRenderer(canvas, mesh) {
       gl.uniform4f(body.uniforms.style, frame.style, 0, 0, 0);
       gl.enable(gl.POLYGON_OFFSET_FILL);
       gl.polygonOffset(1, 2);
-      mesh.parts.forEach((part, i) => {
+      const drawBodies = (glass) => mesh.parts.forEach((part, i) => {
         const s = frame.parts[i];
-        if (!s.visible || !part.indexCount) return;
+        if (!s.visible || !part.indexCount || ((part.alpha ?? 1) < 0.99) !== glass) return;
         gl.uniform4f(body.uniforms.offset, ...s.offset, s.scale);
         gl.uniform4f(body.uniforms.pivot, ...s.pivot, 0);
         gl.uniform4fv(body.uniforms.tint, s.tint);
+        gl.uniform1f(body.uniforms.alpha, part.alpha ?? 1);
         gl.drawElements(gl.TRIANGLES, part.indexCount, gl.UNSIGNED_INT, part.indexStart * 4);
       });
+      drawBodies(false);
       gl.disable(gl.POLYGON_OFFSET_FILL);
 
       gl.useProgram(edge.program);
@@ -366,8 +403,11 @@ function createWebGlRenderer(canvas, mesh) {
         gl.uniform4fv(edge.uniforms.edge, s.edge);
         gl.drawArrays(gl.LINES, part.edgeStart, part.edgeCount);
       });
-      gl.depthMask(true);
       gl.depthFunc(gl.LESS);
+      gl.useProgram(body.program);
+      gl.bindVertexArray(bodyVao);
+      drawBodies(true);          // translucent parts last, without writing depth
+      gl.depthMask(true);
       gl.bindVertexArray(null);
     },
   };

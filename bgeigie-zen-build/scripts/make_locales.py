@@ -55,8 +55,8 @@ STEPS = {
                       '陰極の配線', '裸の陰極線に 5 cm の熱収縮チューブをかぶせて収縮させます。余分な裸線を切り、先端を J4 のピン近くの「Cathode」の穴にはんだ付けします。'),
  'preliminary-test': ('Preliminary test', 'Power the controller over USB. The boot screen warns that the SD card is missing: ignore it and press Continue (top right). On the Drive screen, confirm the sensor is registering counts.',
                       '動作テスト', 'USB でコントローラーに給電します。起動画面に SD カードがないという警告が出ますが、無視して右上の「Continue」を押します。Drive 画面でセンサーがカウントしていることを確認します。'),
- 'wireless-charger': ('Wireless Qi charger', 'Place the coil and interface module on the underside of the rubber liner, against the bottom of the case. Solder the battery connector wires to the module’s BAT + (red) and − (black) holes, pass the connector through a hole punched in the liner and plug it into the board. Stick the coil, face up, to the bottom of the case.',
-                      'ワイヤレス充電（Qi）', 'コイルとインターフェースモジュールをゴムライナーの裏側、ケース底面に置きます。電池コネクターの線をモジュールの BAT +（赤）と −（黒）にはんだ付けし、ライナーに開けた穴を通して基板に差し込みます。コイルは表を上にしてケース底に貼ります。'),
+ 'wireless-charger': ('Wireless Qi charger', 'The receiver sits inside the case, between the black rubber liner and the clear polycarbonate housing. Stick the flat coil, face up, to the bottom of the plastic case, under the rubber liner. Its two thin copper leads run to the small interface board, which stands against the side of the case. Solder the battery connector wires to the board’s BAT + (red) and − (black) holes, pass the connector through a hole punched in the liner and plug it into the PCB. The finished assembly will press the liner against the plastic and hold the coil in place.',
+                      'ワイヤレス充電（Qi）', 'レシーバーはケースの内側、黒いゴムライナーと透明なポリカーボネートの筐体の間に入ります。平らなコイルを表を上にして、ゴムライナーの下、樹脂ケースの底に貼ります。コイルの細い銅線 2 本は、ケースの側面に立てて置いた小さなインターフェース基板へつながります。電池コネクターの線を基板の BAT +（赤）と −（黒）にはんだ付けし、ライナーに開けた穴を通して基板に差し込みます。完成した組み立て品がライナーを樹脂に押し付け、コイルを固定します。'),
  'card-and-battery': ('Card and battery', 'Insert the preconfigured microSD card into the slot at the top of the controller. Then insert the 18650 battery (not in the kit), observing the + and − polarity: a 65 mm holder takes an unprotected flat-top cell, a 69 mm holder a protected button-top cell.',
                       'カードと電池', '設定済みの microSD カードをコントローラー上部のスロットに差します。次に 18650 電池（キットには含まれません）を＋−に注意して入れます。65 mm のホルダーには保護回路なしのフラットトップ、69 mm のホルダーには保護回路付きのボタントップを使います。'),
  'place-in-the-case': ('Place in the case', 'Lower the completed assembly into the Pelican 1015 Micro Case and latch the lid shut. The fit is quite tight, so the device does not rattle in the case.',
@@ -89,9 +89,9 @@ NOTES = {
  'wire-the-cathode': {'info': ('You may need to trim excess bare wire before soldering it to the Safepulse.', 'Safepulse にはんだ付けする前に、余分な裸線を切る必要がある場合があります。'),
                       'model': ('Routing follows the kit photo; the exact shape and length vary from build to build.', '配線はキット写真を参考にしています。実際の形や長さは組み立てごとに異なります。')},
  'preliminary-test': {'info': ('The GPS should answer the controller even without a position fix.', 'GPS は位置が確定していなくてもコントローラーと通信できます。')},
- 'wireless-charger': {'info': ('Punch the hole offset so the module stays centred. Observe the polarity.', 'モジュールが中央に来るよう、穴は少しずらして開けます。極性に注意してください。'),
-                      'model': ('Coil and module shapes and positions are illustrative; the liner and case are not shown.', 'コイルとモジュールの形状と位置はイメージです。ライナーとケースは表示していません。')},
- 'place-in-the-case': {'model': ('Only the back half of the case is modelled; the lid is not shown.', 'ケースは背面側のみモデル化しています。蓋は表示していません。')},
+ 'wireless-charger': {'info': ('Punch the hole offset so the board stays centred. Observe the polarity.', '基板が中央に来るよう、穴は少しずらして開けます。極性に注意してください。'),
+                      'model': ('Coil, board and cable shapes follow the kit photo; sizes and exact positions are illustrative.', 'コイル・基板・ケーブルの形はキット写真に基づきますが、大きさや位置はイメージです。')},
+ 'place-in-the-case': {'model': ('The case, lid and liner come from the Pelican 1015 CAD; how the liner sits in the case is approximate.', 'ケース・蓋・ライナーは Pelican 1015 の CAD に基づきます。ライナーのはまり具合はおおよそです。')},
  'card-and-battery': {'warning': ('Never short-circuit an 18650. If it gets hot, put it in a closed metal container.', '18650 電池を絶対にショートさせないでください。熱くなったら、蓋つきの金属容器に入れてください。'),
                       'model': ('The card and its slot position are illustrative.', 'カードとスロットの位置はイメージです。')},
 }
@@ -108,10 +108,11 @@ PARTS = {
  'safepulse': ('Safepulse 500 V source', 'Safepulse 500 V 電源'), 'gps-module': ('GPS receiver module', 'GPS 受信モジュール'),
  'lnd-7317': ('LND 7317 Geiger-Müller pancake sensor', 'LND 7317 パンケーキ型 GM センサー'), 'anode-wire': ('Sensor high-voltage wire (anode)', 'センサー高圧線（陽極）'),
  'cathode-wire': ('Cathode wire and heat-shrink tubing', '陰極線と熱収縮チューブ'), 'heat-shrink-tubing': ('Heat-shrink tubing (anode post)', '熱収縮チューブ（陽極端子用）'), 'qi-receiver': ('Wireless charge receiver (coil and module)', 'ワイヤレス充電レシーバー（コイルとモジュール）'),
- 'microsd-card': ('Preconfigured microSD card', '設定済み microSD カード'), 'pelican-1015': ('Pelican 1015 Micro Case', 'Pelican 1015 マイクロケース'),
+ 'microsd-card': ('Preconfigured microSD card', '設定済み microSD カード'), 'pelican-housing': ('Pelican 1015 case (clear polycarbonate)', 'Pelican 1015 ケース（透明ポリカーボネート）'), 'pelican-liner': ('Rubber liner, trimmed for the sensor and battery', 'ゴムライナー（センサーと電池用にくり抜き済み）'), 'pelican-lid': ('Pelican 1015 lid', 'Pelican 1015 の蓋'),
  'battery-18650': ('18650 Li-Ion battery (not included)', '18650 リチウムイオン電池（付属しません）'),
 }
 LABELS = {'anode': ('anode wire', '陽極線'), 'cathode': ('cathode wire', '陰極線'), 'sleeve': ('heat-shrink', '熱収縮チューブ'),
+          'qiCoil': ('Qi coil', 'Qi コイル'), 'qiBoard': ('interface board', 'インターフェース基板'),
           'anodeHole': ('Anode hole', '陽極の穴'), 'cathodeHole': ('Cathode hole', '陰極の穴')}
 CHAPTERS = {'header': ('Controller header', 'コントローラーのヘッダー'), 'power': ('Battery & power', '電池と電源'), 'hv': ('Safepulse & GPS', 'Safepulse と GPS'),
             'controller': ('Controller', 'コントローラー'), 'sensor': ('Sensor', 'センサー'), 'charger': ('Qi charger', 'Qi 充電'), 'finish': ('Finishing', '仕上げ')}

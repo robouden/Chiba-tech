@@ -13,9 +13,11 @@ of that STEP model has a different origin than the STEP file the offset was writ
 
 Real CAD: PCB, M5Stack CoreS3, 2x15 header, LND7318 tube + grid cover, GPS, Safepulse,
 diode, battery clips, 18650, fuse and Qi connector.
-Also real: the Pelican 1015 back half.
+Also real: the Pelican 1015 rubber liner (1015-965-CLR.wrl) and the clear polycarbonate case
+(bottom half, lid, latch) from scripts/data/pelican1015.npz, exported by scripts/export_pelican.py
+from Safecast/bGeigieZen `Misc documents  and software/3d models/pelican 1015case.blend`.
 Generated (marked `model` evidence in steps.js): solder joints, M3 screws, J4/J5 pins,
-GPS/tube wires, microSD card and Qi coil/module.
+GPS/tube wires, microSD card and the Qi coil, interface board and cable.
 
 Units mm, Z up, PCB mid-plane at Z = 0 (top side +Z), XY re-centred on the board.
 Output format: see README ("Asset format").
@@ -149,6 +151,54 @@ def sweep(path, r, color, seg=10, r_end=None, end_frac=0.0, end_color=None):
     return shapes
 
 
+def twisted_pair(center, amp, pitch, colors, r, end_pts=(None, None), start_pts=(None, None), seg=6):
+    """Two wires twisted around a centre path (list of points). Optional separate start/end points."""
+    c = spline(center, per=8)
+    # resample every ~0.5 mm
+    seglen = np.linalg.norm(np.diff(c, axis=0), axis=1)
+    s = np.r_[0, np.cumsum(seglen)]
+    n = max(int(s[-1] / 0.5), 4)
+    si = np.linspace(0, s[-1], n)
+    c = np.c_[[np.interp(si, s, c[:, k]) for k in range(3)]].T
+    t = np.gradient(c, axis=0)
+    t /= np.linalg.norm(t, axis=1)[:, None]
+    u = np.cross(t[0], [0, 0, 1] if abs(t[0][2]) < 0.9 else [1, 0, 0])
+    u /= np.linalg.norm(u)
+    offs = []
+    for i in range(len(c)):
+        u = u - np.dot(u, t[i]) * t[i]
+        u /= np.linalg.norm(u)
+        offs.append((u, np.cross(t[i], u)))
+    shapes = []
+    for k, col in enumerate(colors):
+        pts = []
+        for i in range(len(c)):
+            ph = 2 * np.pi * si[i] / pitch + k * np.pi
+            u_, w_ = offs[i]
+            pts.append(c[i] + amp * (np.cos(ph) * u_ + np.sin(ph) * w_))
+        pts = np.array(pts)
+        if start_pts[k] is not None:
+            pts = np.vstack([np.array(start_pts[k], float), pts])
+        if end_pts[k] is not None:
+            pts = np.vstack([pts, np.array(end_pts[k], float)])
+        shapes += sweep(pts, r, col, seg=seg)
+    return shapes
+
+
+GLASS_ALPHA = 0.25
+BLEND_TO_BOARD = np.array([-0.15, 44.0, -31.5])   # Blender world -> board frame (aligned by the liner's centre and bottom)
+
+
+def pelican_housing():
+    """Clear polycarbonate bottom half, lid and latch (translucent parts)."""
+    data = np.load(pathlib.Path(__file__).resolve().parent / 'data' / 'pelican1015.npz')
+    out = {}
+    for key, col in (('body', (0.55, 0.7, 0.82)), ('lid', (0.55, 0.7, 0.82)), ('latch', (0.5, 0.62, 0.72))):
+        out[key] = [dict(color=col, alpha=GLASS_ALPHA, xyz=data[key + '_v'].astype(float) + BLEND_TO_BOARD,
+                         tris=data[key + '_t'].astype(int))]
+    return out
+
+
 # ----------------------------------------------------------------- pads
 
 
@@ -269,8 +319,8 @@ def place_case(path):
     shift = -(allp.min(0) + allp.max(0))[:2] / 2
     for sh in shapes:
         sh['xyz'][:, :2] += shift
-        # yellow = STEP default colour (shell); grey = latches and gasket
-        sh['color'] = (0.78, 0.83, 0.88) if sh['color'][2] < 0.5 else (0.32, 0.33, 0.36)
+        # black rubber liner: yellow = STEP default colour (body); grey = rim
+        sh['color'] = (0.19, 0.2, 0.22) if sh['color'][2] < 0.5 else (0.3, 0.31, 0.34)
     return shapes
 
 
@@ -373,11 +423,50 @@ def build_parts(root, case=None):
                                                       end_frac=0.07, end_color=(0.8, 0.8, 0.82)), ['tube'])
     # -- generated: microSD card (top slot of the controller) and Qi coil / module
     add('sdcard', 'microSD card', [box((-14.0, 26.8, 6.0), (-3.0, 28.8, 7.0), (0.15, 0.15, 0.2))], ['m5'])
-    coil = [frustum(-3.0, 0.0, -36.0, -35.4, 21.0, 21.0, (0.75, 0.45, 0.2), 40)]
-    add('qi.coil', 'Qi receiver coil', coil, ['qi'])
     if case:
-        add('case', 'Pelican 1015 Micro Case (back half)', place_case(case))
-    add('qi.module', 'Qi interface module', [box((31.0, -12.0, -36.0), (49.0, 2.0, -34.5), (0.15, 0.35, 0.6))], ['qi'])
+        add('case', 'Pelican 1015 rubber liner', place_case(case))
+    if (pathlib.Path(__file__).resolve().parent / 'data' / 'pelican1015.npz').exists():
+        h = pelican_housing()
+        add('housing.body', 'Pelican 1015 case, bottom half (clear polycarbonate)', h['body'], ['housing'])
+        add('housing.lid', 'Pelican 1015 case, lid (clear polycarbonate)', h['lid'] + h['latch'], ['housing'])
+    # -- generated: Qi charger sub-assembly (moves with the case): flat rounded-rectangle coil under
+    # the case floor, twisted enamelled leads, a small interface board standing in the ~4 mm gap between
+    # the liner's +X end wall and the polycarbonate wall, and the red/black battery cable through the
+    # liner wall to the charger connector on the main board.
+    cx, cy, cz = 42.0, 0.0, -25.0
+    a0, b0, pitch, turns = 20.0, 14.0, 1.6, 4
+    th = np.linspace(0, 2 * np.pi * turns, 90 * turns + 1)
+    aa, bb = a0 - pitch * th / (2 * np.pi), b0 - pitch * th / (2 * np.pi)
+    spiral = np.c_[cx + aa * np.sign(np.cos(th)) * np.abs(np.cos(th)) ** 0.5,
+                   cy + bb * np.sign(np.sin(th)) * np.abs(np.sin(th)) ** 0.5, np.full(len(th), cz)]
+    copper, enamel = (0.82, 0.48, 0.24), (0.78, 0.42, 0.2)
+    add('charger.coil', 'Qi receiver coil', sweep(spiral, 0.45, copper, seg=8), ['charger'])
+    bx0, bx1 = 66.0, 67.0
+    board_z0, board_z1 = -22.0, -10.0
+    pcb = [box((bx0, -9.0, board_z0), (bx1, 9.0, board_z1), (0.08, 0.5, 0.28))]
+    pcb += [box((bx1, -3.0, -19.0), (bx1 + 1.1, 2.5, -14.5), (0.1, 0.1, 0.11)),
+            box((bx1, 4.0, -20.0), (bx1 + 1.0, 6.0, -18.0), (0.78, 0.66, 0.42)),
+            box((bx1, -7.0, -20.0), (bx1 + 1.0, -5.0, -18.0), (0.78, 0.66, 0.42)),
+            box((bx1, 5.0, -15.5), (bx1 + 1.2, 8.0, -13.0), (0.2, 0.2, 0.22))]
+    for yy in (-0.8, 0.8):      # coil lead pads (bottom edge), battery pads (top edge)
+        pcb.append(box((bx1, yy - 0.5, -21.8), (bx1 + 0.3, yy + 0.5, -20.8), (0.85, 0.7, 0.3)))
+    for yy in (-1.5, 1.5):
+        pcb.append(box((bx1, yy - 0.6, -11.0), (bx1 + 0.3, yy + 0.6, -10.0), (0.85, 0.7, 0.3)))
+    add('charger.board', 'Qi interface board', pcb, ['charger'])
+    lead_a = (cx + a0, cy, cz)                                  # outer end of the coil
+    lead_b = [(cx + a0 - turns * pitch, cy, cz), (cx + a0 - turns * pitch + 1.2, cy, cz - 1.3),
+              (cx + a0 + 1.6, cy, cz - 1.3)]                    # inner end, passing under the turns
+    add('charger.leads', 'Qi coil leads',
+        twisted_pair([(cx + a0 + 2.0, cy, cz - 0.6), (64.8, 0.0, -25.4), (66.2, 0.0, -24.0), (66.6, 0.0, -22.6)], 0.22, 6.0,
+                     [enamel, enamel], 0.17,
+                     end_pts=[(bx1 + 0.15, -0.8, -21.3), (bx1 + 0.15, 0.8, -21.3)],
+                     start_pts=[lead_a, lead_b[-1]]) +
+        tube(lead_b[:-1], 0.17, enamel, seg=6), ['charger'])
+    cable = []
+    for yy, col in ((1.5, (0.85, 0.1, 0.08)), (-1.5, (0.08, 0.08, 0.08))):
+        cable += sweep(spline([(bx1 + 0.15, yy, -10.6), (65.6, yy, -10.5), (63.0, yy, -9.7), (60.0, yy, -8.5),
+                               (58.6, yy, -7.7), (58.0, yy, -7.3)]), 0.5, col, seg=8)
+    add('charger.cable', 'Qi battery cable', cable, ['charger'])
     return P
 
 
@@ -394,6 +483,9 @@ def main(pcb3d, case=None):
     vs = ix = es = 0
     for pid, label, chain, shapes in parts:
         verts, vcol, itris, edges = condition(shapes)
+        glass = pid.startswith('housing')
+        if glass:
+            edges = np.zeros((0, 3))
         # keep the same coordinate quantisation for edges
         first = True
         for cv, cc, ct in chunks(verts, vcol, itris):
@@ -407,7 +499,7 @@ def main(pcb3d, case=None):
             edg.append(np.round(ce / Q).astype(np.int16))
             idx.append(ct.ravel().astype(np.uint16))
             col.append(np.round(cc * 255).astype(np.uint8))
-            manifest.append(dict(id=pid, native='Shape', label=label, chain=chain, alpha=1.0,
+            manifest.append(dict(id=pid, native='Shape', label=label, chain=chain, alpha=GLASS_ALPHA if glass else 1.0,
                                  color=[round(float(x), 3) for x in cc.mean(0)], metadata={},
                                  bbox=[[round(float(x), 3) for x in lo], [round(float(x), 3) for x in hi]],
                                  vertices=[vs, len(cv)], indices=[ix, ct.size], edges=[es, len(ce)]))

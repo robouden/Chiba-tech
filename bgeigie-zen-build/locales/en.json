@@ -68,6 +68,8 @@
     "anode": "anode wire",
     "cathode": "cathode wire",
     "sleeve": "heat-shrink",
+    "qiCoil": "Qi coil",
+    "qiBoard": "interface board",
     "anodeHole": "Anode hole",
     "cathodeHole": "Cathode hole"
   },
@@ -99,7 +101,9 @@
     "heat-shrink-tubing": "Heat-shrink tubing (anode post)",
     "qi-receiver": "Wireless charge receiver (coil and module)",
     "microsd-card": "Preconfigured microSD card",
-    "pelican-1015": "Pelican 1015 Micro Case",
+    "pelican-housing": "Pelican 1015 case (clear polycarbonate)",
+    "pelican-liner": "Rubber liner, trimmed for the sensor and battery",
+    "pelican-lid": "Pelican 1015 lid",
     "battery-18650": "18650 Li-Ion battery (not included)"
   },
   "steps": {
@@ -250,10 +254,10 @@
     },
     "wireless-charger": {
       "title": "Wireless Qi charger",
-      "text": "Place the coil and interface module on the underside of the rubber liner, against the bottom of the case. Solder the battery connector wires to the module’s BAT + (red) and − (black) holes, pass the connector through a hole punched in the liner and plug it into the board. Stick the coil, face up, to the bottom of the case.",
+      "text": "The receiver sits inside the case, between the black rubber liner and the clear polycarbonate housing. Stick the flat coil, face up, to the bottom of the plastic case, under the rubber liner. Its two thin copper leads run to the small interface board, which stands against the side of the case. Solder the battery connector wires to the board’s BAT + (red) and − (black) holes, pass the connector through a hole punched in the liner and plug it into the PCB. The finished assembly will press the liner against the plastic and hold the coil in place.",
       "notes": {
-        "info": "Punch the hole offset so the module stays centred. Observe the polarity.",
-        "model": "Coil and module shapes and positions are illustrative; the liner and case are not shown."
+        "info": "Punch the hole offset so the board stays centred. Observe the polarity.",
+        "model": "Coil, board and cable shapes follow the kit photo; sizes and exact positions are illustrative."
       }
     },
     "card-and-battery": {
@@ -268,7 +272,7 @@
       "title": "Place in the case",
       "text": "Lower the completed assembly into the Pelican 1015 Micro Case and latch the lid shut. The fit is quite tight, so the device does not rattle in the case.",
       "notes": {
-        "model": "Only the back half of the case is modelled; the lid is not shown."
+        "model": "The case, lid and liner come from the Pelican 1015 CAD; how the liner sits in the case is approximate."
       }
     },
     "assembly-complete": {

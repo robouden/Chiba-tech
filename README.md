@@ -4,7 +4,7 @@ Step-by-step 3D assembly instructions for the Safecast bGeigie Zen that run in t
 
 The layout and viewer are modelled on the [APS-II Sesame S3 build guide](https://aps.chibatech.dev/ii/sesame-build/).
 
-> **Status:** the 3D model is the real bGeigieZen V4.x board (PCB, M5Stack CoreS3, LND 7318 tube, Safepulse, GPS, 18650 and clips), and the 25 steps follow the *bGeigieZen Kit Assembly for V4.x boards* manual (2026-04-06). Solder joints, screws, J4/J5 pins, wires, the microSD card and the Qi coil/module are generated illustrations, tagged "Modelled". The back half of the Pelican 1015 case (`1015-965-CLR.wrl`) is included; its lid and the rubber liner are not shown.
+> **Status:** the 3D model is the real bGeigieZen V4.x board (PCB, M5Stack CoreS3, LND 7318 tube, Safepulse, GPS, 18650 and clips), and the 25 steps follow the *bGeigieZen Kit Assembly for V4.x boards* manual (2026-04-06). Solder joints, screws, J4/J5 pins, wires, the microSD card and the Qi coil/module are generated illustrations, tagged "Modelled". The Pelican 1015 is included as black rubber liner plus clear polycarbonate bottom half, lid and latch (drawn translucent), and the Qi receiver sits between liner and housing.
 
 ## Try it
 
@@ -41,6 +41,7 @@ bgeigie-zen-build/
 │   └── assembly.bin      packed geometry
 └── scripts/
     ├── export_zen.py     Zen.pcb3d -> assets/assembly.{json,bin}
+    ├── export_pelican.py Blender script: polycarbonate case -> data/pelican1015.npz
     ├── vrml.py           minimal VRML 2 reader used by export_zen.py
     ├── make_locales.py   writes locales/*.json (step text from the manual)
     ├── check_i18n.py     checks steps.js keys exist in every locale
@@ -80,9 +81,17 @@ python3 scripts/export_zen.py "<path>/Zen.pcb3d"
 
 `export_zen.py` reads the VRML (numpy only), splits vertices at sharp edges (38°), extracts feature edges, splits parts over 65 535 vertices into chunks, recentres on the board and writes the two asset files (about 4 MB). Generated extras (solder mounds, screws, pins, wires, microSD, Qi coil) are defined in `build_parts()`; add or move parts there. Part ids are what `steps.js` selects by.
 
-The case is read from `1015-965-CLR.wrl` next to `Zen.pcb3d` (or pass its path as a second argument). Its placement follows the KiCad model transform of footprint BT1, checked against the battery and clip models, with XY then centred on the board (the VRML has a different origin than the STEP the offset was written for).
+The rubber liner is read from `1015-965-CLR.wrl` next to `Zen.pcb3d` (or pass its path as a second argument). Its placement follows the KiCad model transform of footprint BT1, checked against the battery and clip models, with XY then centred on the board (the VRML has a different origin than the STEP the offset was written for).
 
-Next steps: add the lid and rubber liner (`black inner liner.blend` in the Blender folder), and replace the illustrative parts with measured ones.
+The clear polycarbonate case comes from `scripts/data/pelican1015.npz`, exported from `pelican 1015case.blend` (Safecast/bGeigieZen, `Misc documents  and software/3d models/`) with Blender in the background:
+
+```bash
+blender -b "pelican 1015case.blend" --python scripts/export_pelican.py -- scripts/data/pelican1015.npz
+```
+
+It is aligned to the liner by centre and bottom (the two models are not the same mesh), so the fit is approximate. Parts with manifest `alpha` below 1 (the housing) are drawn in a second, blended pass without writing depth, in both the WebGPU and WebGL2 renderers. The Qi coil, interface board and cable are generated in `build_parts()` and form a sub-assembly with the liner and housing, which is built alone in step 22 and lowered over the electronics in step 24.
+
+Next steps: replace the illustrative parts with measured ones, and check the WebGPU path on real hardware (development checks used the WebGL2 fallback).
 
 After editing step ids or text, run `python3 scripts/make_locales.py && python3 scripts/check_i18n.py`.
 

@@ -56,7 +56,7 @@ async function fetchAssembly(base) {
     return {
       ...p,
       center: [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2],
-      render: { indexStart: iStart, indexCount: iCount, edgeStart: p.edges[0], edgeCount: p.edges[1] },
+      render: { indexStart: iStart, indexCount: iCount, edgeStart: p.edges[0], edgeCount: p.edges[1], alpha: p.alpha ?? 1 },
     };
   });
   for (let i = 0; i < normals.length; i += 3) {
