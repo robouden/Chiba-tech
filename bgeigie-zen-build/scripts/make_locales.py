@@ -59,8 +59,10 @@ STEPS = {
                       'ワイヤレス充電（Qi）', 'コイルとインターフェースモジュールをゴムライナーの裏側、ケース底面に置きます。電池コネクターの線をモジュールの BAT +（赤）と −（黒）にはんだ付けし、ライナーに開けた穴を通して基板に差し込みます。コイルは表を上にしてケース底に貼ります。'),
  'card-and-battery': ('Card and battery', 'Insert the preconfigured microSD card into the slot at the top of the controller. Then insert the 18650 battery (not in the kit), observing the + and − polarity: a 65 mm holder takes an unprotected flat-top cell, a 69 mm holder a protected button-top cell.',
                       'カードと電池', '設定済みの microSD カードをコントローラー上部のスロットに差します。次に 18650 電池（キットには含まれません）を＋−に注意して入れます。65 mm のホルダーには保護回路なしのフラットトップ、69 mm のホルダーには保護回路付きのボタントップを使います。'),
- 'assembly-complete': ('Assembly complete', 'Put the assembly into the Pelican 1015 Micro Case and latch the lid; the fit is tight so nothing rattles. Hold the power button (right side of the controller) for half a second to switch on; hold for three seconds to shut down. The boot screen shows the device ID.',
-                       '組み立て完了', '組み立てたものを Pelican 1015 マイクロケースに入れ、蓋を閉じます。ぴったりなのでガタつきません。電源ボタン（コントローラー右側）を約 0.5 秒押すと起動、3 秒押すと終了します。起動画面にデバイス ID が表示されます。'),
+ 'place-in-the-case': ('Place in the case', 'Lower the completed assembly into the Pelican 1015 Micro Case and latch the lid shut. The fit is quite tight, so the device does not rattle in the case.',
+                       'ケースに入れる', '完成した組み立て品を Pelican 1015 マイクロケースに入れ、蓋を閉じてラッチをかけます。かなりぴったりなので、ケース内でガタつきません。'),
+ 'assembly-complete': ('Assembly complete', 'Open the case and hold the power button (right side of the controller) for half a second to switch on; hold it for three seconds to shut down. The boot screen shows the device ID.',
+                       '組み立て完了', 'ケースを開け、電源ボタン（コントローラー右側）を約 0.5 秒押すと起動、3 秒押すと終了します。起動画面にデバイス ID が表示されます。'),
 }
 
 # id: {kind: (en, ja)}
@@ -89,6 +91,7 @@ NOTES = {
  'preliminary-test': {'info': ('The GPS should answer the controller even without a position fix.', 'GPS は位置が確定していなくてもコントローラーと通信できます。')},
  'wireless-charger': {'info': ('Punch the hole offset so the module stays centred. Observe the polarity.', 'モジュールが中央に来るよう、穴は少しずらして開けます。極性に注意してください。'),
                       'model': ('Coil and module shapes and positions are illustrative; the liner and case are not shown.', 'コイルとモジュールの形状と位置はイメージです。ライナーとケースは表示していません。')},
+ 'place-in-the-case': {'model': ('Only the back half of the case is modelled; the lid is not shown.', 'ケースは背面側のみモデル化しています。蓋は表示していません。')},
  'card-and-battery': {'warning': ('Never short-circuit an 18650. If it gets hot, put it in a closed metal container.', '18650 電池を絶対にショートさせないでください。熱くなったら、蓋つきの金属容器に入れてください。'),
                       'model': ('The card and its slot position are illustrative.', 'カードとスロットの位置はイメージです。')},
 }
@@ -105,7 +108,8 @@ PARTS = {
  'safepulse': ('Safepulse 500 V source', 'Safepulse 500 V 電源'), 'gps-module': ('GPS receiver module', 'GPS 受信モジュール'),
  'lnd-7317': ('LND 7317 Geiger-Müller pancake sensor', 'LND 7317 パンケーキ型 GM センサー'), 'anode-wire': ('Sensor high-voltage wire (anode)', 'センサー高圧線（陽極）'),
  'cathode-wire': ('Cathode wire and heat-shrink tubing', '陰極線と熱収縮チューブ'), 'qi-receiver': ('Wireless charge receiver (coil and module)', 'ワイヤレス充電レシーバー（コイルとモジュール）'),
- 'microsd-card': ('Preconfigured microSD card', '設定済み microSD カード'), 'battery-18650': ('18650 Li-Ion battery (not included)', '18650 リチウムイオン電池（付属しません）'),
+ 'microsd-card': ('Preconfigured microSD card', '設定済み microSD カード'), 'pelican-1015': ('Pelican 1015 Micro Case', 'Pelican 1015 マイクロケース'),
+ 'battery-18650': ('18650 Li-Ion battery (not included)', '18650 リチウムイオン電池（付属しません）'),
 }
 CHAPTERS = {'header': ('Controller header', 'コントローラーのヘッダー'), 'power': ('Battery & power', '電池と電源'), 'hv': ('Safepulse & GPS', 'Safepulse と GPS'),
             'controller': ('Controller', 'コントローラー'), 'sensor': ('Sensor', 'センサー'), 'charger': ('Qi charger', 'Qi 充電'), 'finish': ('Finishing', '仕上げ')}

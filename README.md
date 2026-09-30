@@ -4,7 +4,7 @@ Step-by-step 3D assembly instructions for the Safecast bGeigie Zen that run in t
 
 The layout and viewer are modelled on the [APS-II Sesame S3 build guide](https://aps.chibatech.dev/ii/sesame-build/).
 
-> **Status:** the 3D model is the real bGeigieZen V4.x board (PCB, M5Stack CoreS3, LND 7318 tube, Safepulse, GPS, 18650 and clips), and the 24 steps follow the *bGeigieZen Kit Assembly for V4.x boards* manual (2026-04-06). Solder joints, screws, J4/J5 pins, wires, the microSD card and the Qi coil/module are generated illustrations, tagged "Modelled". The Pelican 1015 case and liner are not shown yet.
+> **Status:** the 3D model is the real bGeigieZen V4.x board (PCB, M5Stack CoreS3, LND 7318 tube, Safepulse, GPS, 18650 and clips), and the 25 steps follow the *bGeigieZen Kit Assembly for V4.x boards* manual (2026-04-06). Solder joints, screws, J4/J5 pins, wires, the microSD card and the Qi coil/module are generated illustrations, tagged "Modelled". The back half of the Pelican 1015 case (`1015-965-CLR.wrl`) is included; its lid and the rubber liner are not shown.
 
 ## Try it
 
@@ -17,7 +17,7 @@ Open <http://localhost:8000/?step=5>. Needs a browser with WebGPU or WebGL2.
 
 | URL parameter | Effect |
 |---|---|
-| `step=N` | Jump to step N (1–24) |
+| `step=N` | Jump to step N (1–25) |
 | `lang=ja` | Japanese (default follows the browser, then the saved choice) |
 | `style=line` | Line-drawing style |
 | `renderer=webgl` | Force the WebGL2 renderer instead of WebGPU |
@@ -80,7 +80,9 @@ python3 scripts/export_zen.py "<path>/Zen.pcb3d"
 
 `export_zen.py` reads the VRML (numpy only), splits vertices at sharp edges (38°), extracts feature edges, splits parts over 65 535 vertices into chunks, recentres on the board and writes the two asset files (about 4 MB). Generated extras (solder mounds, screws, pins, wires, microSD, Qi coil) are defined in `build_parts()`; add or move parts there. Part ids are what `steps.js` selects by.
 
-Next steps: add the Pelican 1015 case and liner (`1015-965-CLR.wrl` is in the same hardware folder; its placement offset is in the `.kicad_pcb`), and replace the illustrative parts with measured ones.
+The case is read from `1015-965-CLR.wrl` next to `Zen.pcb3d` (or pass its path as a second argument). Its placement follows the KiCad model transform of footprint BT1, checked against the battery and clip models, with XY then centred on the board (the VRML has a different origin than the STEP the offset was written for).
+
+Next steps: add the lid and rubber liner (`black inner liner.blend` in the Blender folder), and replace the illustrative parts with measured ones.
 
 After editing step ids or text, run `python3 scripts/make_locales.py && python3 scripts/check_i18n.py`.
 

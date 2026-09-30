@@ -4,10 +4,16 @@
 Source: Zen.pcb3d (a pcb2blender/KiCad export: pcb.wrl + components/*.wrl + pads/*.toml)
 from the Safecast/bGeigieZen repo, hardware/bGeigieZen V4.x.x draft and production/bGeigieZen V4.2.x/.
 
-    python3 scripts/export_zen.py "<path>/Zen.pcb3d"
+    python3 scripts/export_zen.py "<path>/Zen.pcb3d" ["<path>/1015-965-CLR.wrl"]
+
+The Pelican 1015 case (back half) is read from 1015-965-CLR.wrl, looked up next to Zen.pcb3d
+when not given. Its placement follows the KiCad model transform of footprint BT1 (calibrated
+against the battery and clip models); XY is then centred on the board, because the VRML export
+of that STEP model has a different origin than the STEP file the offset was written for.
 
 Real CAD: PCB, M5Stack CoreS3, 2x15 header, LND7318 tube + grid cover, GPS, Safepulse,
 diode, battery clips, 18650, fuse and Qi connector.
+Also real: the Pelican 1015 back half.
 Generated (marked `model` evidence in steps.js): solder joints, M3 screws, J4/J5 pins,
 GPS/tube wires, microSD card and Qi coil/module.
 
@@ -186,7 +192,32 @@ def chunks(verts, vcol, itris):
 # ----------------------------------------------------------------- part table
 
 
-def build_parts(root):
+def place_case(path):
+    """Pelican 1015 shell, recoloured, in the recentred board frame (see module docstring)."""
+    def rot(ax, a):
+        a = np.radians(a)
+        c, sn = np.cos(a), np.sin(a)
+        return {'x': np.array([[1, 0, 0], [0, c, -sn], [0, sn, c]]),
+                'z': np.array([[c, -sn, 0], [sn, c, 0], [0, 0, 1]])}[ax]
+    # KiCad: rotate (90, 0, -180) = angles negated, applied X then Y then Z; offset (-23, 25, -1.5) mm.
+    Rm = rot('z', 180) @ rot('x', -90)
+    off = np.array([-23.0, 25.0, -1.5])
+    shapes = vrml.load(path)
+    for sh in shapes:
+        loc = (sh['xyz'] * 2.54) @ Rm.T + off       # wrl units are 0.1 inch
+        # footprint BT1 is on the bottom layer, rotated 180 deg at (175.4276, 77.48)
+        sh['xyz'] = np.c_[175.4276 - loc[:, 0], -77.48 + loc[:, 1], -TOP - loc[:, 2]]
+        sh['xyz'][:, :2] -= CENTER
+    allp = np.vstack([sh['xyz'] for sh in shapes])
+    shift = -(allp.min(0) + allp.max(0))[:2] / 2
+    for sh in shapes:
+        sh['xyz'][:, :2] += shift
+        # yellow = STEP default colour (shell); grey = latches and gasket
+        sh['color'] = (0.78, 0.83, 0.88) if sh['color'][2] < 0.5 else (0.32, 0.33, 0.36)
+    return shapes
+
+
+def build_parts(root, case=None):
     shapes = vrml.load(root / 'pcb.wrl')
     for s in shapes:
         s['xyz'] = s['xyz'] * 1000.0
@@ -261,6 +292,8 @@ def build_parts(root):
     add('sdcard', 'microSD card', [box((-14.0, 26.8, 6.0), (-3.0, 28.8, 7.0), (0.15, 0.15, 0.2))], ['m5'])
     coil = [frustum(-3.0, 0.0, -36.0, -35.4, 21.0, 21.0, (0.75, 0.45, 0.2), 40)]
     add('qi.coil', 'Qi receiver coil', coil, ['qi'])
+    if case:
+        add('case', 'Pelican 1015 Micro Case (back half)', place_case(case))
     add('qi.module', 'Qi interface module', [box((31.0, -12.0, -36.0), (49.0, 2.0, -34.5), (0.15, 0.35, 0.6))], ['qi'])
     return P
 
@@ -268,10 +301,12 @@ def build_parts(root):
 # ----------------------------------------------------------------- packing
 
 
-def main(pcb3d):
+def main(pcb3d, case=None):
+    pcb3d = pathlib.Path(pcb3d)
+    case = pathlib.Path(case) if case else pcb3d.with_name('1015-965-CLR.wrl')
     with tempfile.TemporaryDirectory() as tmp:
         zipfile.ZipFile(pcb3d).extractall(tmp)
-        parts = build_parts(pathlib.Path(tmp))
+        parts = build_parts(pathlib.Path(tmp), case if case.exists() else None)
     pos, edg, idx, col, manifest = [], [], [], [], []
     vs = ix = es = 0
     for pid, label, chain, shapes in parts:
@@ -323,4 +358,4 @@ def main(pcb3d):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(*sys.argv[1:3])

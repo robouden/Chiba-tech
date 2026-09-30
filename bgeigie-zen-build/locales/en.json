@@ -92,6 +92,7 @@
     "cathode-wire": "Cathode wire and heat-shrink tubing",
     "qi-receiver": "Wireless charge receiver (coil and module)",
     "microsd-card": "Preconfigured microSD card",
+    "pelican-1015": "Pelican 1015 Micro Case",
     "battery-18650": "18650 Li-Ion battery (not included)"
   },
   "steps": {
@@ -256,9 +257,16 @@
         "model": "The card and its slot position are illustrative."
       }
     },
+    "place-in-the-case": {
+      "title": "Place in the case",
+      "text": "Lower the completed assembly into the Pelican 1015 Micro Case and latch the lid shut. The fit is quite tight, so the device does not rattle in the case.",
+      "notes": {
+        "model": "Only the back half of the case is modelled; the lid is not shown."
+      }
+    },
     "assembly-complete": {
       "title": "Assembly complete",
-      "text": "Put the assembly into the Pelican 1015 Micro Case and latch the lid; the fit is tight so nothing rattles. Hold the power button (right side of the controller) for half a second to switch on; hold for three seconds to shut down. The boot screen shows the device ID."
+      "text": "Open the case and hold the power button (right side of the controller) for half a second to switch on; hold it for three seconds to shut down. The boot screen shows the device ID."
     }
   }
 }

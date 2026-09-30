@@ -41,6 +41,7 @@ const S = {
   qi: is('qi.coil', 'qi.module'),
   sd: is('sdcard'),
   battery: is('battery'),
+  case: is('case'),
 };
 S.clipsAndSolder = any(S.clips, S.solderClips);
 export const SELECTORS = S;
@@ -251,6 +252,14 @@ export const STEPS = [
     add: [enter(S.sd, [0, 14, 0]), enter(S.battery, up(-9), 0.3)],
     notes: [{ kind: 'warning' }, { kind: 'model' }],
     view: { yaw: -75, pitch: -10 },
+    evidence: ['manual', 'cad'],
+  },
+  {
+    chapter: 'finish', id: 'place-in-the-case',
+    parts: [{ key: 'pelican-1015', qty: 1, sel: S.case, swatch: '#c7d3e0' }],
+    add: [enter(S.case, up(-46))],
+    notes: [{ kind: 'model' }],
+    view: { yaw: -58, pitch: 34 },
     evidence: ['manual', 'cad'],
   },
   {
