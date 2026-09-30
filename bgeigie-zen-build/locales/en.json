@@ -64,7 +64,13 @@
     "heatgun": "Heat source (heat-shrink)",
     "stripper": "Wire stripper"
   },
-  "labels": {},
+  "labels": {
+    "anode": "anode wire",
+    "cathode": "cathode wire",
+    "sleeve": "heat-shrink",
+    "anodeHole": "Anode hole",
+    "cathodeHole": "Cathode hole"
+  },
   "chapters": {
     "header": "Controller header",
     "power": "Battery & power",
@@ -90,6 +96,7 @@
     "lnd-7317": "LND 7317 Geiger-Müller pancake sensor",
     "anode-wire": "Sensor high-voltage wire (anode)",
     "cathode-wire": "Cathode wire and heat-shrink tubing",
+    "heat-shrink-tubing": "Heat-shrink tubing (anode post)",
     "qi-receiver": "Wireless charge receiver (coil and module)",
     "microsd-card": "Preconfigured microSD card",
     "pelican-1015": "Pelican 1015 Micro Case",
@@ -180,8 +187,8 @@
       "title": "GPS wires",
       "text": "Insert the four prepared wires into the four middle holes of J3 and solder them. The two outer positions stay empty. The GPS module lies upside-down next to J3 for now.",
       "notes": {
-        "info": "Do not peel the wax paper from the module’s adhesive pad yet. The outer two wires (positions 1 and 6) are cut short at the module and are not used.",
-        "model": "Wire routing and colours are illustrative."
+        "info": "Do not peel the wax paper from the module’s adhesive pad yet. The outer two wires (positions 1 and 6) are cut short at the module and are not used. Colours follow the kit photo: at the board, black = 3.3V (not ground!), green = RX2, yellow = TX2, blue = GND. TX and RX are crossed: the board’s TX2 goes to the GPS receive pin and RX2 to its transmit pin.",
+        "model": "Wire routing is illustrative; the colours and the TX/RX crossing come from the kit photo."
       }
     },
     "solder-the-safepulse": {
@@ -218,7 +225,7 @@
       "text": "Tin the bare end of the red anode wire, plug its socket onto the anode post and solder the other end into one of the two “Anode” holes on the Safepulse. Cover the anode post with heat-shrink tubing.",
       "notes": {
         "info": "Tinning keeps stray strands from shorting elsewhere on the board. Either Anode hole works; they are connected internally. The anode carries 500 V, so keep the post covered.",
-        "model": "Wire routing is illustrative."
+        "model": "Routing follows the kit photo; the exact shape and length vary from build to build."
       }
     },
     "wire-the-cathode": {
@@ -226,7 +233,7 @@
       "text": "Cover the bare cathode wire with the 5 cm (2 in) heat-shrink tubing and shrink it. Trim any excess bare wire and solder the end into the “Cathode” hole near the J4 pins.",
       "notes": {
         "info": "You may need to trim excess bare wire before soldering it to the Safepulse.",
-        "model": "Wire routing is illustrative."
+        "model": "Routing follows the kit photo; the exact shape and length vary from build to build."
       }
     },
     "preliminary-test": {

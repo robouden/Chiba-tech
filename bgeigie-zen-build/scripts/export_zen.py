@@ -92,6 +92,63 @@ def tube(points, r, color, seg=8):
     return shapes
 
 
+def spline(points, per=10):
+    """Uniform Catmull-Rom curve through the control points (endpoints kept)."""
+    P = [np.array(p, float) for p in points]
+    P = [P[0]] + P + [P[-1]]
+    out = []
+    for i in range(1, len(P) - 2):
+        p0, p1, p2, p3 = P[i - 1], P[i], P[i + 1], P[i + 2]
+        for t in np.linspace(0, 1, per, endpoint=False):
+            out.append(0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3))
+    out.append(P[-2])
+    return np.array(out)
+
+
+def sweep(path, r, color, seg=10, r_end=None, end_frac=0.0, end_color=None):
+    """One continuous tube along `path` (parallel-transport frames), capped at both ends.
+    The last `end_frac` of its length can be a thinner bare-metal end (r_end, end_color)."""
+    path = np.asarray(path, float)
+    t = np.gradient(path, axis=0)
+    t /= np.linalg.norm(t, axis=1)[:, None]
+    u = np.cross(t[0], [0, 0, 1] if abs(t[0][2]) < 0.9 else [1, 0, 0])
+    u /= np.linalg.norm(u)
+    a = np.linspace(0, 2 * np.pi, seg, endpoint=False)
+    length = np.r_[0, np.cumsum(np.linalg.norm(np.diff(path, axis=0), axis=1))]
+    cut = length[-1] * (1 - end_frac) if end_frac else np.inf
+    rings, radii = [], []
+    for i, p in enumerate(path):
+        u = u - np.dot(u, t[i]) * t[i]
+        u /= np.linalg.norm(u)
+        w = np.cross(t[i], u)
+        rad = r_end if (r_end and length[i] >= cut) else r
+        rings.append(p + (np.cos(a)[:, None] * u + np.sin(a)[:, None] * w) * rad)
+        radii.append(rad)
+    shapes = []
+
+    def build(lo, hi, col):
+        v = np.vstack([rings[i] for i in range(lo, hi + 1)] + [path[lo], path[hi]])
+        n = hi - lo + 1
+        tri = []
+        for i in range(n - 1):
+            for k in range(seg):
+                b = (k + 1) % seg
+                tri += [(i * seg + k, i * seg + b, (i + 1) * seg + b), (i * seg + k, (i + 1) * seg + b, (i + 1) * seg + k)]
+        c0, c1 = n * seg, n * seg + 1
+        for k in range(seg):
+            b = (k + 1) % seg
+            tri += [(c0, b, k), (c1, (n - 1) * seg + k, (n - 1) * seg + b)]
+        shapes.append(_shape(col, v, tri))
+
+    if end_frac:
+        split = max(i for i in range(len(path)) if length[i] <= cut)
+        build(0, split + 1, color)
+        build(split + 1, len(path) - 1, end_color or color)
+    else:
+        build(0, len(path) - 1, color)
+    return shapes
+
+
 # ----------------------------------------------------------------- pads
 
 
@@ -248,7 +305,12 @@ def build_parts(root, case=None):
     add('j1', '2x15 pin header', inst(1))
     add('m5.fit', 'M5Stack CoreS3 (dry fit)', inst(2), ['m5'])
     add('m5', 'M5Stack CoreS3', inst(2))
-    add('tube', 'LND 7318 pancake sensor', inst(3))
+    tube_shapes = inst(3)
+    sleeve = [t for t in tube_shapes if abs(t['color'][0] - 0.22) < 0.02]     # black tubing over the anode post
+    bare = [t for t in tube_shapes if all(t is not x for x in sleeve)]
+    bare += tube([(0.0, -0.6, -9.9), (12.5, -0.6, -9.9)], 1.5, silver, seg=16)     # anode post under the sleeve
+    add('tube', 'LND 7318 pancake sensor', bare)
+    add('anode.sleeve', 'Heat-shrink tubing on the anode post', sleeve, ['tube'])
     add('tube.cover', 'Sensor protective cover', inst(4), ['tube'])
     add('gps', 'GPS receiver', inst(6))
     add('safepulse', 'Safepulse 500 V supply', inst(7))
@@ -279,15 +341,36 @@ def build_parts(root, case=None):
         pins.append(box((p[0] - 1.27, p[1] - 1.27, BOT - 2.5), (p[0] + 1.27, p[1] + 1.27, BOT), black))
         pins.append(box((p[0] - 0.32, p[1] - 0.32, BOT - 8.0), (p[0] + 0.32, p[1] + 0.32, TOP + 2.4), gold))
     add('safepulse.pins', 'Safepulse header pins', pins, ['safepulse'])
-    # -- generated: GPS wires (J3 holes -> module edge)
+    # -- generated: the Anode / Cathode holes of the Safepulse (silver ring + dark hole on the component face)
+    for pid, label, (hx, hy) in (('safepulse.anode_pad', 'Safepulse Anode hole', (5.6, 4.4)),
+                                 ('safepulse.cathode_pad', 'Safepulse Cathode hole', (28.0, 2.0))):
+        add(pid, label, [frustum(hx, hy, -5.3, -5.75, 1.35, 1.35, silver, 20),
+                         frustum(hx, hy, -5.75, -5.8, 0.55, 0.55, (0.04, 0.04, 0.04), 14)], ['safepulse'])
+    # -- generated: GPS wires. Colours follow the kit photo: at the board, by J3 pad order
+    # (x ascending) 3.3V = black (!), /RX2 = green, /TX2 = yellow, GND = blue. The controller's
+    # TX2/RX2 must meet the GPS module's RX/TX, so the two middle wires cross before the module.
     wires = []
-    for i, p in enumerate(sorted(pads['J3'], key=lambda q: q[0])):
-        c = [(0.9, 0.1, 0.1), (0.1, 0.1, 0.1), (0.9, 0.8, 0.1), (0.1, 0.6, 0.2)][i % 4]
-        wires += tube([(p[0], p[1], BOT - 2.0), (p[0], p[1], TOP + 3.0), (p[0], p[1] + 3.0, 7.0)], 0.35, c)
+    j3 = sorted(pads['J3'], key=lambda q: q[0])
+    colors = [(0.08, 0.08, 0.08), (0.1, 0.6, 0.25), (0.93, 0.8, 0.1), (0.15, 0.25, 0.85)]
+    heights = [3.0, 2.4, 3.6, 3.0]          # the crossing wires run at different heights
+    module_slot = [0, 2, 1, 3]              # module-side order swaps RX/TX
+    for i, p in enumerate(j3):
+        q = j3[module_slot[i]]
+        z = heights[i]
+        wires += tube([(p[0], p[1], BOT - 2.0), (p[0], p[1], z), (q[0], p[1] + 4.5, z + 1.2)], 0.35, colors[i])
     add('gps.wires', 'GPS wires', wires, ['gps'])
-    # -- generated: sensor wires (anode red / cathode black), approximate routing
-    add('tube.anode', 'Sensor anode wire', tube([(13.5, -0.6, -10.0), (13.5, -0.6, -1.0), (22.0, 0.0, -1.0)], 0.45, red), ['tube'])
-    add('tube.cathode', 'Sensor cathode wire', tube([(-7.3, 0.5, -8.0), (5.0, 0.5, -8.0), (5.0, 0.5, -1.0), (12.0, 3.0, -1.0)], 0.45, black), ['tube'])
+    # -- generated: sensor wires, routed after the kit photo (viewed from the underside).
+    # Anode (thick red): leaves the black sleeve on the anode post, loops out and back over the
+    # Safepulse to the "Anode" hole at its tube-side end (lower-left in the photo). Cathode (thin, black sleeved): leaves the
+    # tube rim beside the post, arches over the module and ends bare in the "Cathode" hole near J4.
+    # The Anode hole is at the tube-side end of the module, just below the sleeve (+y side).
+    red_path = spline([(13.5, -0.6, -9.9), (17.5, -0.8, -10.2), (23.0, -3.5, -11.8), (24.0, -8.0, -12.8),
+                       (19.0, -11.0, -12.4), (12.0, -7.0, -11.0), (7.5, -1.0, -8.5), (5.6, 4.4, -5.0), (5.6, 4.4, -3.6)])
+    add('tube.anode', 'Sensor anode wire', sweep(red_path, 0.8, (0.85, 0.1, 0.08), seg=12), ['tube'])
+    blk_path = spline([(-7.3, -4.5, -8.5), (-4.0, -6.0, -10.5), (2.0, -8.5, -13.0), (11.0, -9.0, -14.5), (21.0, -6.0, -14.0),
+                       (27.0, -0.5, -11.0), (28.0, 2.0, -7.0), (28.0, 2.0, -5.0), (28.0, 2.0, -3.6)])
+    add('tube.cathode', 'Sensor cathode wire', sweep(blk_path, 0.65, (0.2, 0.2, 0.22), seg=10, r_end=0.32,
+                                                      end_frac=0.07, end_color=(0.8, 0.8, 0.82)), ['tube'])
     # -- generated: microSD card (top slot of the controller) and Qi coil / module
     add('sdcard', 'microSD card', [box((-14.0, 26.8, 6.0), (-3.0, 28.8, 7.0), (0.15, 0.15, 0.2))], ['m5'])
     coil = [frustum(-3.0, 0.0, -36.0, -35.4, 21.0, 21.0, (0.75, 0.45, 0.2), 40)]

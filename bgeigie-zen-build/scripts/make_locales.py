@@ -77,17 +77,17 @@ NOTES = {
  'insulate-the-clips': {'info': ('The tubing lifts the battery slightly in the clips and pushes the board up in the case. Without kit tubing, use 6 mm (¼ in) tubing cut to 18–20 mm.', 'チューブの厚みで電池がクリップの中でわずかに高くなり、基板がケース内で持ち上がります。チューブがないときは 6 mm（¼ インチ）のチューブを 18〜20 mm に切って使います。')},
  'safepulse-pins': {'info': ('Do not solder the Safepulse in place until the GPS wires are soldered.', 'GPS の配線がはんだ付けされるまで、Safepulse は取り付けないでください。'),
                     'model': ('Pin length and carrier height are illustrative.', 'ピンの長さと台の高さはイメージです。')},
- 'gps-wires': {'info': ('Do not peel the wax paper from the module’s adhesive pad yet. The outer two wires (positions 1 and 6) are cut short at the module and are not used.', 'モジュールの粘着パッドの剥離紙はまだはがしません。外側 2 本（位置 1 と 6）はモジュール側で短く切られており、使いません。'),
-              'model': ('Wire routing and colours are illustrative.', '配線の取り回しと色はイメージです。')},
+ 'gps-wires': {'info': ('Do not peel the wax paper from the module’s adhesive pad yet. The outer two wires (positions 1 and 6) are cut short at the module and are not used. Colours follow the kit photo: at the board, black = 3.3V (not ground!), green = RX2, yellow = TX2, blue = GND. TX and RX are crossed: the board’s TX2 goes to the GPS receive pin and RX2 to its transmit pin.', 'モジュールの粘着パッドの剥離紙はまだはがしません。外側 2 本（位置 1 と 6）はモジュール側で短く切られており、使いません。色はキット写真のとおりで、基板側は 黒 = 3.3V（グランドではありません）、緑 = RX2、黄 = TX2、青 = GND です。TX と RX は交差します。基板の TX2 は GPS の受信ピンへ、RX2 は GPS の送信ピンへつなぎます。'),
+              'model': ('Wire routing is illustrative; the colours and the TX/RX crossing come from the kit photo.', '配線の取り回しはイメージです。色と TX/RX の交差はキット写真に基づきます。')},
  'solder-the-safepulse': {'info': ('Keep this order: the GPS and Safepulse joints are in the same area on opposite sides of the board, and fitting either module first would block the other.', 'この順序を守ってください。GPS と Safepulse のはんだ付けは基板の反対側の同じ場所にあり、どちらかを先に取り付けるともう一方が取り付けられなくなります。')},
  'mount-the-gps': {'info': ('The module attaches with a foam pad that has adhesive on both faces. It goes on after the Safepulse pins are soldered.', 'モジュールは両面粘着のフォームパッドで固定します。Safepulse のピンをはんだ付けした後に取り付けます。')},
  'mount-the-controller': {'warning': ('Do not overtorque the screws.', 'ネジを締めすぎないでください。')},
  'place-the-sensor': {'warning': ('Keep the protective cover on the sensor at all times. The mica membrane is very delicate; a puncture cannot be repaired.', 'センサーの保護カバーは常に付けたままにしてください。雲母膜は非常に薄く、穴が開くと修理できません。'),
                       'model': ('The case is not modelled: the sensor is shown fixed to the underside of the board.', 'ケースはモデル化していません。センサーは基板の裏側に固定した状態で表示しています。')},
  'wire-the-anode': {'info': ('Tinning keeps stray strands from shorting elsewhere on the board. Either Anode hole works; they are connected internally. The anode carries 500 V, so keep the post covered.', '予備はんだをすることで、はみ出した素線が基板上でショートするのを防ぎます。Anode の穴はどちらでも構いません（内部でつながっています）。陽極には 500 V がかかるので、端子は必ず覆ってください。'),
-                    'model': ('Wire routing is illustrative.', '配線の取り回しはイメージです。')},
+                    'model': ('Routing follows the kit photo; the exact shape and length vary from build to build.', '配線はキット写真を参考にしています。実際の形や長さは組み立てごとに異なります。')},
  'wire-the-cathode': {'info': ('You may need to trim excess bare wire before soldering it to the Safepulse.', 'Safepulse にはんだ付けする前に、余分な裸線を切る必要がある場合があります。'),
-                      'model': ('Wire routing is illustrative.', '配線の取り回しはイメージです。')},
+                      'model': ('Routing follows the kit photo; the exact shape and length vary from build to build.', '配線はキット写真を参考にしています。実際の形や長さは組み立てごとに異なります。')},
  'preliminary-test': {'info': ('The GPS should answer the controller even without a position fix.', 'GPS は位置が確定していなくてもコントローラーと通信できます。')},
  'wireless-charger': {'info': ('Punch the hole offset so the module stays centred. Observe the polarity.', 'モジュールが中央に来るよう、穴は少しずらして開けます。極性に注意してください。'),
                       'model': ('Coil and module shapes and positions are illustrative; the liner and case are not shown.', 'コイルとモジュールの形状と位置はイメージです。ライナーとケースは表示していません。')},
@@ -107,10 +107,12 @@ PARTS = {
  'pin-header': ('Pin header (Safepulse)', 'ピンヘッダー（Safepulse 用）'), 'gps-wire': ('GPS wire', 'GPS 用の線'),
  'safepulse': ('Safepulse 500 V source', 'Safepulse 500 V 電源'), 'gps-module': ('GPS receiver module', 'GPS 受信モジュール'),
  'lnd-7317': ('LND 7317 Geiger-Müller pancake sensor', 'LND 7317 パンケーキ型 GM センサー'), 'anode-wire': ('Sensor high-voltage wire (anode)', 'センサー高圧線（陽極）'),
- 'cathode-wire': ('Cathode wire and heat-shrink tubing', '陰極線と熱収縮チューブ'), 'qi-receiver': ('Wireless charge receiver (coil and module)', 'ワイヤレス充電レシーバー（コイルとモジュール）'),
+ 'cathode-wire': ('Cathode wire and heat-shrink tubing', '陰極線と熱収縮チューブ'), 'heat-shrink-tubing': ('Heat-shrink tubing (anode post)', '熱収縮チューブ（陽極端子用）'), 'qi-receiver': ('Wireless charge receiver (coil and module)', 'ワイヤレス充電レシーバー（コイルとモジュール）'),
  'microsd-card': ('Preconfigured microSD card', '設定済み microSD カード'), 'pelican-1015': ('Pelican 1015 Micro Case', 'Pelican 1015 マイクロケース'),
  'battery-18650': ('18650 Li-Ion battery (not included)', '18650 リチウムイオン電池（付属しません）'),
 }
+LABELS = {'anode': ('anode wire', '陽極線'), 'cathode': ('cathode wire', '陰極線'), 'sleeve': ('heat-shrink', '熱収縮チューブ'),
+          'anodeHole': ('Anode hole', '陽極の穴'), 'cathodeHole': ('Cathode hole', '陰極の穴')}
 CHAPTERS = {'header': ('Controller header', 'コントローラーのヘッダー'), 'power': ('Battery & power', '電池と電源'), 'hv': ('Safepulse & GPS', 'Safepulse と GPS'),
             'controller': ('Controller', 'コントローラー'), 'sensor': ('Sensor', 'センサー'), 'charger': ('Qi charger', 'Qi 充電'), 'finish': ('Finishing', '仕上げ')}
 TOOLS = {'iron': ('Soldering iron', 'はんだごて'), 'cutters': ('Flush cutters', 'ニッパー'), 'pliers': ('Pliers', 'ペンチ'),
@@ -137,7 +139,7 @@ def build(i, code):
     d['tools'] = {k: v[i] for k, v in TOOLS.items()}
     d['chapters'] = {k: v[i] for k, v in CHAPTERS.items()}
     d['parts'] = {k: v[i] for k, v in PARTS.items()}
-    d['labels'] = {}
+    d['labels'] = {k: v[i] for k, v in LABELS.items()}
     d['evidence'] = {k: {'short': v[i][0], 'long': v[i][1]} for k, v in EVIDENCE.items()}
     steps = {}
     for sid, v in STEPS.items():
