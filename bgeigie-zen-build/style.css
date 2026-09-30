@@ -113,6 +113,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .note-model { background: #f3f1ec; border: 1.5px dashed #b5b0a4; color: #4a4843; }
 .note-model::before { content: "≈"; }
 .note-info { background: #eaf4fb; border: 1.5px solid #9cc7e4; }
+.note-warning { background: #fdeeea; border: 1.5px solid #e2917d; }
+.note-warning::before { content: "!"; color: #c0361c; }
 .note-info::before { content: "i"; font-family: Georgia, serif; font-style: italic; }
 
 .evidence-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
@@ -121,6 +123,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .chip-instructor { border-color: #2f6fc4; color: #2f6fc4; }
 .chip-measured { border-color: #2a8a4b; color: #2a8a4b; }
 .chip-photo { border-color: #8a4fc4; color: #8a4fc4; }
+.chip-manual { border-color: #2f6fc4; color: #2f6fc4; }
+.chip-cad { border-color: #2a8a4b; color: #2a8a4b; }
 .chip-model { border-color: #8a877f; color: #8a877f; }
 
 .stage { position: relative; min-height: 0; overflow: hidden; }

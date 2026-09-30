@@ -4,7 +4,7 @@ Step-by-step 3D assembly instructions for the Safecast bGeigie Zen that run in t
 
 The layout and viewer are modelled on the [APS-II Sesame S3 build guide](https://aps.chibatech.dev/ii/sesame-build/).
 
-> **Status: prototype.** The geometry is placeholder boxes and cylinders, and the parts list, layout and step text are illustrative. Every step is tagged "Modelled". Replace them with the real CAD and build procedure before publishing it as a guide.
+> **Status:** the 3D model is the real bGeigieZen V4.x board (PCB, M5Stack CoreS3, LND 7318 tube, Safepulse, GPS, 18650 and clips), and the 24 steps follow the *bGeigieZen Kit Assembly for V4.x boards* manual (2026-04-06). Solder joints, screws, J4/J5 pins, wires, the microSD card and the Qi coil/module are generated illustrations, tagged "Modelled". The Pelican 1015 case and liner are not shown yet.
 
 ## Try it
 
@@ -17,7 +17,7 @@ Open <http://localhost:8000/?step=5>. Needs a browser with WebGPU or WebGL2.
 
 | URL parameter | Effect |
 |---|---|
-| `step=N` | Jump to step N (1–15) |
+| `step=N` | Jump to step N (1–24) |
 | `lang=ja` | Japanese (default follows the browser, then the saved choice) |
 | `style=line` | Line-drawing style |
 | `renderer=webgl` | Force the WebGL2 renderer instead of WebGPU |
@@ -40,8 +40,10 @@ bgeigie-zen-build/
 │   ├── assembly.json     part manifest
 │   └── assembly.bin      packed geometry
 └── scripts/
-    ├── build_assembly.py generates the assets (placeholder geometry)
-    ├── make_locales.py   writes locales/*.json
+    ├── export_zen.py     Zen.pcb3d -> assets/assembly.{json,bin}
+    ├── vrml.py           minimal VRML 2 reader used by export_zen.py
+    ├── make_locales.py   writes locales/*.json (step text from the manual)
+    ├── check_i18n.py     checks steps.js keys exist in every locale
     └── ref_en.json       shared UI strings used by make_locales.py
 ```
 
@@ -68,12 +70,19 @@ Each CAD part is drawn separately, so it can have its own offset, pop-in scale, 
 
 Units are millimetres, Z up, with the enclosure underside at Z = 0. Normals are computed in the browser.
 
-## Making it real
+## Regenerating the model
 
-1. **Geometry.** Replace `build()` in `scripts/build_assembly.py` with an exporter that reads the real CAD (STEP or FreeCAD), tessellates each part and writes the same format. Keep stable part ids, because `steps.js` selects by them.
-2. **Steps.** Rewrite `js/steps.js` for the actual build order, tools and camera views. Update `evidence` from `model` to `measured` or `photo` where it is verified.
-3. **Text.** Edit the dictionaries in `scripts/make_locales.py` and run `python3 scripts/make_locales.py`. Every locale must have identical keys.
-4. **Parts links.** A part with `ref` and `url` in `steps.js` shows a purchase link.
+The geometry comes from `Zen.pcb3d` in the [Safecast/bGeigieZen](https://github.com/Safecast/bGeigieZen) repo (`hardware/bGeigieZen V4.x.x draft and production/bGeigieZen V4.2.x/`). It is a pcb2blender export: `pcb.wrl` places one VRML file per component, and `pads/*.toml` gives every pad position.
+
+```bash
+python3 scripts/export_zen.py "<path>/Zen.pcb3d"
+```
+
+`export_zen.py` reads the VRML (numpy only), splits vertices at sharp edges (38°), extracts feature edges, splits parts over 65 535 vertices into chunks, recentres on the board and writes the two asset files (about 4 MB). Generated extras (solder mounds, screws, pins, wires, microSD, Qi coil) are defined in `build_parts()`; add or move parts there. Part ids are what `steps.js` selects by.
+
+Next steps: add the Pelican 1015 case and liner (`1015-965-CLR.wrl` is in the same hardware folder; its placement offset is in the `.kicad_pcb`), and replace the illustrative parts with measured ones.
+
+After editing step ids or text, run `python3 scripts/make_locales.py && python3 scripts/check_i18n.py`.
 
 ## Deploy
 

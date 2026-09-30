@@ -5,10 +5,10 @@
     "name": "English"
   },
   "ui": {
-    "pageTitle": "bGeigie Zen Build",
-    "description": "Interactive 3D assembly instructions for the bGeigie Zen.",
+    "pageTitle": "bGeigieZen Build | Safecast",
+    "description": "Interactive 3D assembly instructions for the Safecast bGeigieZen V4.x kit.",
     "back": "Safecast",
-    "product": "bGeigie Zen · Assembly",
+    "product": "bGeigieZen V4.x · Kit",
     "language": "Language",
     "stepCount": "Step {n} of {total}",
     "partsHeading": "Parts",
@@ -30,144 +30,235 @@
     "pause": "Pause",
     "replay": "Replay this step",
     "timeline": "Assembly timeline",
-    "coverKicker": "Safecast · Build instructions",
-    "coverTitle": "bGeigie Zen",
-    "coverSub": "Step-by-step 3D assembly: case, battery, GM tube, mainboard, GPS and display.",
+    "coverKicker": "Safecast · Kit assembly",
+    "coverTitle": "bGeigieZen",
+    "coverSub": "Geiger counter kit: M5Stack CoreS3, LND 7317 sensor, Safepulse HV supply, GPS and an 18650 cell on one board.",
     "coverSteps": "steps",
     "coverChapters": "chapters",
     "coverTools": "tools",
     "start": "Start building →",
     "coverHint": "Drag to rotate · Shift-drag to pan · Scroll to zoom · ← → to change step",
-    "credit": "bGeigie Zen is a {creator} open hardware project. Viewer layout after the APS-II Sesame build guide.",
+    "credit": "bGeigieZen is an open-source Geiger counter by {creator}. Viewer layout after the APS-II Sesame build guide.",
     "creditGithub": "GitHub ↗",
-    "creditDiscord": "Community ↗"
+    "creditDiscord": "Support forum ↗"
   },
   "evidence": {
-    "instructor": {
-      "short": "Instructor",
-      "long": "Instructor report or confirmation"
+    "manual": {
+      "short": "Manual",
+      "long": "The step comes from the V4.x assembly manual"
     },
-    "measured": {
-      "short": "Measured",
-      "long": "Instructor physical estimate"
-    },
-    "photo": {
-      "short": "Photo",
-      "long": "Seen in the build photographs"
+    "cad": {
+      "short": "CAD",
+      "long": "Geometry from the bGeigieZen 3D model"
     },
     "model": {
       "short": "Modelled",
-      "long": "Modelled or assumed; not measured"
+      "long": "Generated illustration; not measured"
     }
   },
   "tools": {
     "iron": "Soldering iron",
-    "pliers": "Pliers",
     "cutters": "Flush cutters",
-    "tape": "Electrical tape",
-    "stripper": "Wire stripper",
-    "screwdriver": "Screwdriver"
+    "pliers": "Pliers",
+    "screwdriver": "Phillips screwdriver",
+    "heatgun": "Heat source (heat-shrink)",
+    "stripper": "Wire stripper"
   },
-  "labels": {
-    "front": "front",
-    "battery": "battery",
-    "window": "mica window",
-    "antenna": "antenna",
-    "hvLead": "HV lead",
-    "batteryPlus": "battery +"
-  },
+  "labels": {},
   "chapters": {
-    "case": "Case",
-    "power": "Battery & tube",
-    "electronics": "Electronics",
-    "close": "Closing up"
+    "header": "Controller header",
+    "power": "Battery & power",
+    "hv": "Safepulse & GPS",
+    "controller": "Controller",
+    "sensor": "Sensor",
+    "charger": "Qi charger",
+    "finish": "Finishing"
   },
   "parts": {
-    "enclosure-base": "Enclosure base",
-    "lipo-battery": "LiPo battery",
-    "gm-tube": "GM pancake tube",
-    "m3-standoff": "M3 standoff",
-    "main-pcb": "Main PCB",
-    "esp32-module": "ESP32 module",
-    "male-header-9-pin": "Male header, 9-pin",
-    "gps-module": "GPS module",
-    "hv-module": "HV supply module",
-    "oled-display": "OLED display",
-    "usb-c-connector": "USB-C connector",
-    "lid": "Lid with display window"
+    "pcb": "bGeigieZen PCB V4.x",
+    "header-2x15": "Pin header, 2×15",
+    "m5-cores3": "M5Stack CoreS3 controller",
+    "m3-screw": "M3 Phillips truss head screw",
+    "battery-clip": "Battery holder clip",
+    "diode": "Battery protection diode",
+    "fuse-holder": "Fuse holder and 2 A fuse",
+    "qi-connector": "Charger cable (receptacle and plug)",
+    "pin-header": "Pin header (Safepulse)",
+    "gps-wire": "GPS wire",
+    "safepulse": "Safepulse 500 V source",
+    "gps-module": "GPS receiver module",
+    "lnd-7317": "LND 7317 Geiger-Müller pancake sensor",
+    "anode-wire": "Sensor high-voltage wire (anode)",
+    "cathode-wire": "Cathode wire and heat-shrink tubing",
+    "qi-receiver": "Wireless charge receiver (coil and module)",
+    "microsd-card": "Preconfigured microSD card",
+    "battery-18650": "18650 Li-Ion battery (not included)"
   },
   "steps": {
-    "orient-the-case": {
-      "title": "Orient the case",
-      "text": "Place the enclosure base on the bench, open side up. The USB-C side is on the right."
+    "orient-the-pcb": {
+      "title": "Orient the PCB",
+      "text": "Lay the bGeigieZen V4.x printed circuit board on the bench with the top (component) side up."
     },
-    "fit-the-battery": {
-      "title": "Fit the battery",
-      "text": "Lower the LiPo cell into the left half of the base, label up. Route its lead toward the middle.",
+    "place-the-header": {
+      "title": "Place the 2×15 header",
+      "text": "Insert the 2×15 pin header into the J1 holes, long side up.",
       "notes": {
-        "model": "Placeholder geometry and dimensions; replace with the real CAD before publishing."
+        "info": "The short end of the header pins must protrude from the bottom of the board."
       }
     },
-    "fit-the-tube": {
-      "title": "Fit the GM tube",
-      "text": "Seat the pancake Geiger–Müller tube in the right half of the base with its mica window facing up.",
+    "dry-fit-the-controller": {
+      "title": "Dry-fit the controller",
+      "text": "Line up the header pins with the sockets in the M5Stack CoreS3 and press the controller flush against the top of the PCB. Take care not to bend the pins.",
       "notes": {
-        "model": "Placeholder geometry and dimensions; replace with the real CAD before publishing."
+        "info": "Some older kits use the M5Stack Core2 v1.1. It works the same; only its back cover differs and must be removed with the small Allen key from the kit."
       }
     },
-    "mount-the-standoffs": {
-      "title": "Mount the standoffs",
-      "text": "Screw the four M3 standoffs into the corner posts of the base."
+    "fasten-with-screws": {
+      "title": "Fasten with two screws",
+      "text": "Turn the assembly over. Insert the two M3 screws into the captive nuts in the controller and tighten them loosely. You will remove the controller again later."
     },
-    "seat-the-mainboard": {
-      "title": "Seat the mainboard",
-      "text": "Lower the main PCB onto the standoffs and fasten it with four screws. The battery and tube sit underneath."
-    },
-    "esp32-headers": {
-      "title": "ESP32 headers",
-      "text": "Fit two 9-pin male headers under the ESP32 module, long ends down."
-    },
-    "solder-the-esp32": {
-      "title": "Solder the ESP32",
-      "text": "Solder every header pin on the module’s top face."
-    },
-    "seat-the-esp32": {
-      "title": "Seat the ESP32",
-      "text": "Plug the module into the mainboard sockets, antenna toward the board edge."
-    },
-    "build-the-gps": {
-      "title": "Build the GPS",
-      "text": "Solder the six header pins of the GPS module. The ceramic patch antenna faces up."
-    },
-    "seat-the-gps": {
-      "title": "Seat the GPS",
-      "text": "Plug the GPS module into its socket."
-    },
-    "hv-module": {
-      "title": "HV module",
-      "text": "Solder the high-voltage supply to the mainboard and connect its output lead to the tube.",
+    "solder-the-header": {
+      "title": "Solder the header",
+      "text": "Solder the header pins to the PCB. The solder should look as if it flowed up the pins and around the PCB rings (pads).",
       "notes": {
-        "info": "Handle the HV module only with power off and the battery unplugged."
+        "info": "Some of these joints end up hidden under the controller in the final assembly."
       }
     },
-    "display-and-usb": {
-      "title": "Display and USB-C",
-      "text": "Solder the OLED display and the USB-C connector. The display must line up with the lid window."
+    "remove-the-controller": {
+      "title": "Remove the controller",
+      "text": "Unscrew the two screws and take the controller off for the rest of the assembly."
     },
-    "connect-the-battery": {
-      "title": "Connect the battery",
-      "text": "Solder the battery lead to the mainboard from underneath. Check polarity first.",
+    "battery-clips": {
+      "title": "Battery clips",
+      "text": "Fit the two battery clips on the underside of the board, following the outline of the 18650 battery. Clench the pins slightly, like a staple, so each clip stays put and lies flat.",
       "notes": {
-        "info": "Keep the lead short and insulated from the tube."
+        "info": "The pins should protrude evenly on the top side of the board."
       }
     },
-    "close-the-case": {
-      "title": "Close the case",
-      "text": "Lower the lid, display through the window, and fasten it."
+    "solder-the-clips": {
+      "title": "Solder the clips",
+      "text": "Solder both clips from the top of the board. The solder must flow evenly over the pins and into the holes.",
+      "notes": {
+        "info": "The clip pins need a lot of heat. If the solder does not flow readily, use a more powerful iron or a second iron at the same temperature. A minor gap is acceptable if the rest of the pin has a continuous fillet."
+      }
+    },
+    "protection-diode": {
+      "title": "Protection diode",
+      "text": "Match the diode to the outline on the PCB: the white or silver stripe lines up with the thick line, next to the square-pad hole. Bend the leads away from the body, insert them, solder from the top and trim the excess.",
+      "notes": {
+        "info": "With the fuse, the diode protects against a battery inserted backwards. Bend the leads with two pairs of pliers so the body is not stressed, and wear safety glasses when clipping: cut leads can fly."
+      }
+    },
+    "fuse-holder": {
+      "title": "Fuse holder",
+      "text": "Insert the fuse holder into the four holes marked “FUSE 2A”, flush with the board, and solder all four pins. The fuse itself is inserted later."
+    },
+    "charger-cable": {
+      "title": "Charger cable",
+      "text": "Insert the receptacle pins into the “Qi-charger” holes with the red wire closest to the board edge, and solder them. Use the wires as a handle so the receptacle sits flush.",
+      "notes": {
+        "info": "Observe the polarity: the red wire goes closest to the board edge."
+      }
+    },
+    "insulate-the-clips": {
+      "title": "Insulate the clips (optional)",
+      "text": "Slip the pre-cut heat-shrink tubing over the sides of the battery clips, red for positive (+) and black for negative (−), leaving 1–2 mm above the metal, then shrink it with heat. Leave the end contacts bare.",
+      "notes": {
+        "info": "The tubing lifts the battery slightly in the clips and pushes the board up in the case. Without kit tubing, use 6 mm (¼ in) tubing cut to 18–20 mm."
+      }
+    },
+    "safepulse-pins": {
+      "title": "Safepulse pins",
+      "text": "Place three pins in J4 and two in J5, with the long end and its plastic carrier on the underside of the board (the battery side).",
+      "notes": {
+        "info": "Do not solder the Safepulse in place until the GPS wires are soldered.",
+        "model": "Pin length and carrier height are illustrative."
+      }
+    },
+    "gps-wires": {
+      "title": "GPS wires",
+      "text": "Insert the four prepared wires into the four middle holes of J3 and solder them. The two outer positions stay empty. The GPS module lies upside-down next to J3 for now.",
+      "notes": {
+        "info": "Do not peel the wax paper from the module’s adhesive pad yet. The outer two wires (positions 1 and 6) are cut short at the module and are not used.",
+        "model": "Wire routing and colours are illustrative."
+      }
+    },
+    "solder-the-safepulse": {
+      "title": "Solder the Safepulse",
+      "text": "Place the Safepulse on the pins, leaving only a short length protruding through the holes, and solder.",
+      "notes": {
+        "info": "Keep this order: the GPS and Safepulse joints are in the same area on opposite sides of the board, and fitting either module first would block the other."
+      }
+    },
+    "mount-the-gps": {
+      "title": "Mount the GPS",
+      "text": "Peel the wax paper off the two-sided adhesive pad and press the GPS module onto its outline on the board.",
+      "notes": {
+        "info": "The module attaches with a foam pad that has adhesive on both faces. It goes on after the Safepulse pins are soldered."
+      }
+    },
+    "mount-the-controller": {
+      "title": "Mount the controller",
+      "text": "Press the controller onto the header pins, then fasten it with the two machine screws. Tighten them, but do not overtorque.",
+      "notes": {
+        "warning": "Do not overtorque the screws."
+      }
+    },
+    "place-the-sensor": {
+      "title": "Place the LND 7317 sensor",
+      "text": "Set the sensor in the back cover of the case, angled so the large anode post is near the case edge, away from the Safepulse. Press the board onto the sensor’s adhesive foam pad to make a single assembly.",
+      "notes": {
+        "warning": "Keep the protective cover on the sensor at all times. The mica membrane is very delicate; a puncture cannot be repaired.",
+        "model": "The case is not modelled: the sensor is shown fixed to the underside of the board."
+      }
+    },
+    "wire-the-anode": {
+      "title": "Wire the anode",
+      "text": "Tin the bare end of the red anode wire, plug its socket onto the anode post and solder the other end into one of the two “Anode” holes on the Safepulse. Cover the anode post with heat-shrink tubing.",
+      "notes": {
+        "info": "Tinning keeps stray strands from shorting elsewhere on the board. Either Anode hole works; they are connected internally. The anode carries 500 V, so keep the post covered.",
+        "model": "Wire routing is illustrative."
+      }
+    },
+    "wire-the-cathode": {
+      "title": "Wire the cathode",
+      "text": "Cover the bare cathode wire with the 5 cm (2 in) heat-shrink tubing and shrink it. Trim any excess bare wire and solder the end into the “Cathode” hole near the J4 pins.",
+      "notes": {
+        "info": "You may need to trim excess bare wire before soldering it to the Safepulse.",
+        "model": "Wire routing is illustrative."
+      }
+    },
+    "preliminary-test": {
+      "title": "Preliminary test",
+      "text": "Power the controller over USB. The boot screen warns that the SD card is missing: ignore it and press Continue (top right). On the Drive screen, confirm the sensor is registering counts.",
+      "notes": {
+        "info": "The GPS should answer the controller even without a position fix."
+      },
+      "checks": [
+        "Boot screen appears",
+        "Drive screen shows counts from the sensor",
+        "GPS power light is on and flashes once a second"
+      ]
+    },
+    "wireless-charger": {
+      "title": "Wireless Qi charger",
+      "text": "Place the coil and interface module on the underside of the rubber liner, against the bottom of the case. Solder the battery connector wires to the module’s BAT + (red) and − (black) holes, pass the connector through a hole punched in the liner and plug it into the board. Stick the coil, face up, to the bottom of the case.",
+      "notes": {
+        "info": "Punch the hole offset so the module stays centred. Observe the polarity.",
+        "model": "Coil and module shapes and positions are illustrative; the liner and case are not shown."
+      }
+    },
+    "card-and-battery": {
+      "title": "Card and battery",
+      "text": "Insert the preconfigured microSD card into the slot at the top of the controller. Then insert the 18650 battery (not in the kit), observing the + and − polarity: a 65 mm holder takes an unprotected flat-top cell, a 69 mm holder a protected button-top cell.",
+      "notes": {
+        "warning": "Never short-circuit an 18650. If it gets hot, put it in a closed metal container.",
+        "model": "The card and its slot position are illustrative."
+      }
     },
     "assembly-complete": {
       "title": "Assembly complete",
-      "text": "Power on and check the display, GPS fix and counts before field use."
+      "text": "Put the assembly into the Pelican 1015 Micro Case and latch the lid; the fit is tight so nothing rattles. Hold the power button (right side of the controller) for half a second to switch on; hold for three seconds to shut down. The boot screen shows the device ID."
     }
   }
 }
